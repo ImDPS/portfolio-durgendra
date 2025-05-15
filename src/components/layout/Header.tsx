@@ -1,48 +1,71 @@
 'use client';
 
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { usePathname } from 'next/navigation';
 import ThemeToggle from './ThemeToggle';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const pathname = usePathname();
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
+  useEffect(() => {
+    const handleScroll = () => {
+      const isScrolled = window.scrollY > 10;
+      if (isScrolled !== scrolled) {
+        setScrolled(isScrolled);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [scrolled]);
+
+  const isActive = (path: string) => {
+    return pathname === path;
+  };
+
+  const navLinks = [
+    { href: '/', label: 'Home' },
+    { href: '/about', label: 'About' },
+    { href: '/projects', label: 'Projects' },
+    { href: '/contact', label: 'Contact' },
+  ];
+
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-gray-200 bg-white/75 backdrop-blur-sm dark:border-gray-800 dark:bg-gray-900/75">
+    <header className={`sticky top-0 z-50 w-full border-b border-gray-200 bg-white/75 backdrop-blur-sm transition-all dark:border-gray-800 dark:bg-gray-900/75 ${scrolled ? 'shadow-sm' : ''}`}>
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         <div className="flex items-center">
-          <Link href="/" className="text-xl font-bold">
+          <Link href="/" className="text-xl font-bold text-gray-900 dark:text-white">
             Durgendra
           </Link>
         </div>
 
         {/* Desktop Navigation */}
         <nav className="hidden md:block">
-          <ul className="flex space-x-4">
-            <li>
-              <Link href="/" className="px-3 py-2 text-gray-700 hover:text-primary dark:text-gray-200">
-                Home
-              </Link>
-            </li>
-            <li>
-              <Link href="/about" className="px-3 py-2 text-gray-700 hover:text-primary dark:text-gray-200">
-                About
-              </Link>
-            </li>
-            <li>
-              <Link href="/projects" className="px-3 py-2 text-gray-700 hover:text-primary dark:text-gray-200">
-                Projects
-              </Link>
-            </li>
-            <li>
-              <Link href="/contact" className="px-3 py-2 text-gray-700 hover:text-primary dark:text-gray-200">
-                Contact
-              </Link>
-            </li>
+          <ul className="flex space-x-1">
+            {navLinks.map((link) => (
+              <li key={link.href}>
+                <Link
+                  href={link.href}
+                  className={`relative px-3 py-2 transition-colors ${
+                    isActive(link.href)
+                      ? 'text-primary font-medium'
+                      : 'text-gray-700 hover:text-primary dark:text-gray-200'
+                  }`}
+                >
+                  {link.label}
+                  {isActive(link.href) && (
+                    <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary" />
+                  )}
+                </Link>
+              </li>
+            ))}
           </ul>
         </nav>
 
@@ -86,42 +109,21 @@ const Header = () => {
       {isMenuOpen && (
         <div className="md:hidden">
           <ul className="flex flex-col bg-white px-4 py-2 dark:bg-gray-900">
-            <li>
-              <Link
-                href="/"
-                className="block py-2 text-gray-700 hover:text-primary dark:text-gray-200"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Home
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/about"
-                className="block py-2 text-gray-700 hover:text-primary dark:text-gray-200"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                About
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/projects"
-                className="block py-2 text-gray-700 hover:text-primary dark:text-gray-200"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Projects
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/contact"
-                className="block py-2 text-gray-700 hover:text-primary dark:text-gray-200"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Contact
-              </Link>
-            </li>
+            {navLinks.map((link) => (
+              <li key={link.href}>
+                <Link
+                  href={link.href}
+                  className={`block py-2 ${
+                    isActive(link.href)
+                      ? 'text-primary font-medium'
+                      : 'text-gray-700 hover:text-primary dark:text-gray-200'
+                  }`}
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  {link.label}
+                </Link>
+              </li>
+            ))}
           </ul>
         </div>
       )}
