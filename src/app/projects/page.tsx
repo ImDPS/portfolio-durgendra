@@ -4,9 +4,9 @@ import Container from '@/components/ui/Container';
 import MotionPage from '@/components/motion/MotionPage';
 import MotionSection from '@/components/motion/MotionSection';
 import MotionItem from '@/components/motion/MotionItem';
+import ProjectModel from '@/components/3d/ProjectModel';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import Image from 'next/image';
 import { cardVariants, staggerContainer } from '@/utils/animations';
 
 export default function ProjectsPage() {
@@ -17,6 +17,7 @@ export default function ProjectsPage() {
       description: 'A complete e-commerce solution with product management, shopping cart, and payment integration.',
       technologies: ['React', 'Node.js', 'MongoDB'],
       imageUrl: '/placeholder.jpg',
+      type: 'website',
     },
     {
       id: 'portfolio',
@@ -24,6 +25,7 @@ export default function ProjectsPage() {
       description: 'A modern portfolio website with interactive 3D elements and animations.',
       technologies: ['Next.js', 'Three.js', 'GSAP'],
       imageUrl: '/placeholder.jpg',
+      type: 'website',
     },
     {
       id: 'dashboard',
@@ -31,6 +33,15 @@ export default function ProjectsPage() {
       description: 'A data visualization dashboard with real-time updates and analytics.',
       technologies: ['React', 'D3.js', 'GraphQL'],
       imageUrl: '/placeholder.jpg',
+      type: 'dashboard',
+    },
+    {
+      id: 'mobile-app',
+      title: 'Mobile Application',
+      description: 'A cross-platform mobile app for task management and productivity.',
+      technologies: ['React Native', 'Redux', 'Firebase'],
+      imageUrl: '/placeholder.jpg',
+      type: 'mobile',
     }
   ];
 
@@ -52,7 +63,7 @@ export default function ProjectsPage() {
           </MotionSection>
           
           <motion.div 
-            className="grid gap-8 md:grid-cols-2 lg:grid-cols-3"
+            className="grid gap-8 md:grid-cols-2"
             variants={staggerContainer}
             initial="initial"
             animate="animate"
@@ -66,24 +77,15 @@ export default function ProjectsPage() {
                 whileHover="hover"
                 viewport={{ once: true }}
                 custom={index * 0.1}
-                className="group overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm transition-all hover:shadow-md dark:border-gray-700 dark:bg-gray-800"
+                className="group overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm transition-all hover:shadow-lg dark:border-gray-700 dark:bg-gray-800"
               >
                 <div className="relative aspect-video overflow-hidden bg-gray-200 dark:bg-gray-700">
-                  {project.imageUrl ? (
-                    <Image
-                      src={project.imageUrl}
-                      alt={`${project.title} project thumbnail`}
-                      fill
-                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                      className="object-cover transition-transform duration-300 group-hover:scale-105"
-                      priority={index === 0}
-                      loading={index === 0 ? undefined : 'lazy'}
-                    />
-                  ) : (
-                    <div className="flex h-full w-full items-center justify-center bg-gray-300 dark:bg-gray-600">
-                      <span className="text-gray-600 dark:text-gray-400">Project Image</span>
-                    </div>
-                  )}
+                  <ProjectModel 
+                    type={project.type as any}
+                    image={project.imageUrl}
+                    height={240}
+                    interactive={false}
+                  />
                 </div>
                 <div className="p-6">
                   <h2 className="mb-2 text-xl font-semibold transition-colors group-hover:text-primary">{project.title}</h2>
@@ -114,6 +116,27 @@ export default function ProjectsPage() {
               </motion.div>
             ))}
           </motion.div>
+          
+          <MotionSection className="mt-16">
+            <MotionItem>
+              <h2 className="mb-4 text-2xl font-bold">Let's Work Together</h2>
+            </MotionItem>
+            
+            <MotionItem delay={0.1}>
+              <p className="mb-6 text-lg text-gray-700 dark:text-gray-300">
+                Have a project in mind? I'm always open to discussing new opportunities and challenges.
+              </p>
+            </MotionItem>
+            
+            <MotionItem delay={0.2}>
+              <Link 
+                href="/contact" 
+                className="inline-block rounded-md bg-primary px-6 py-3 text-white transition-colors hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:focus:ring-offset-gray-900"
+              >
+                Get in Touch
+              </Link>
+            </MotionItem>
+          </MotionSection>
         </div>
       </Container>
     </MotionPage>

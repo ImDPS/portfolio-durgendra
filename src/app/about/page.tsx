@@ -5,7 +5,8 @@ import MotionPage from '@/components/motion/MotionPage';
 import MotionSection from '@/components/motion/MotionSection';
 import MotionItem from '@/components/motion/MotionItem';
 import ScrollSection from '@/components/gsap/ScrollSection';
-import ParallaxSection from '@/components/gsap/ParallaxSection';
+import GradientSection from '@/components/ui/GradientSection';
+import SkillsGlobe from '@/components/3d/SkillsGlobe';
 import { motion } from 'framer-motion';
 import { fadeInUp, staggerContainer } from '@/utils/animations';
 
@@ -39,67 +40,72 @@ export default function AboutPage() {
             </div>
           </MotionSection>
 
-          <ParallaxSection className="mb-12 py-0">
-            <div className="py-12 px-8 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 rounded-xl shadow-lg">
-              <ScrollSection animation="fade-in">
-                <MotionItem>
-                  <h2 className="mb-4 text-2xl font-bold">
-                    Skills & Expertise
-                  </h2>
-                </MotionItem>
-                
-                <div className="mb-8">
-                  <MotionItem delay={0.1}>
-                    <h3 className="mb-3 text-xl font-semibold">Frontend Development</h3>
-                  </MotionItem>
-                  
-                  <motion.ul 
-                    className="grid grid-cols-2 gap-2 md:grid-cols-3 lg:grid-cols-4"
-                    variants={staggerContainer}
-                    initial="initial"
-                    whileInView="animate"
-                    viewport={{ once: true }}
-                  >
-                    {['React', 'Next.js', 'TypeScript', 'Tailwind CSS', 'Framer Motion', 'GSAP', 'Three.js', 'WebGL'].map((skill, index) => (
-                      <motion.li 
-                        key={skill} 
-                        variants={fadeInUp}
-                        custom={index * 0.05}
-                        className="rounded-md bg-gray-100 px-3 py-1 dark:bg-gray-800"
-                      >
-                        {skill}
-                      </motion.li>
-                    ))}
-                  </motion.ul>
-                </div>
-                
-                <div className="mb-8">
-                  <MotionItem delay={0.2}>
-                    <h3 className="mb-3 text-xl font-semibold">Backend Development</h3>
-                  </MotionItem>
-                  
-                  <motion.ul 
-                    className="grid grid-cols-2 gap-2 md:grid-cols-3 lg:grid-cols-4"
-                    variants={staggerContainer}
-                    initial="initial"
-                    whileInView="animate"
-                    viewport={{ once: true }}
-                  >
-                    {['Node.js', 'Express', 'MongoDB', 'PostgreSQL', 'GraphQL', 'REST APIs', 'Firebase', 'AWS'].map((skill, index) => (
-                      <motion.li 
-                        key={skill} 
-                        variants={fadeInUp}
-                        custom={index * 0.05}
-                        className="rounded-md bg-gray-100 px-3 py-1 dark:bg-gray-800"
-                      >
-                        {skill}
-                      </motion.li>
-                    ))}
-                  </motion.ul>
-                </div>
-              </ScrollSection>
+          <GradientSection className="mb-12">
+            <MotionItem>
+              <h2 className="mb-4 text-2xl font-bold">
+                Skills & Expertise
+              </h2>
+            </MotionItem>
+            
+            <div className="mb-8">
+              <MotionSection>
+                <SkillsGlobe />
+                <p className="mt-4 text-center text-sm text-gray-600 dark:text-gray-400">
+                  Interactive 3D visualization of my technical skills. Hover over points to explore.
+                </p>
+              </MotionSection>
             </div>
-          </ParallaxSection>
+
+            <div className="mt-12 mb-8">
+              <MotionItem delay={0.1}>
+                <h3 className="mb-3 text-xl font-semibold">Frontend Development</h3>
+              </MotionItem>
+              
+              <motion.ul 
+                className="grid grid-cols-2 gap-2 md:grid-cols-3 lg:grid-cols-4"
+                variants={staggerContainer}
+                initial="initial"
+                whileInView="animate"
+                viewport={{ once: true }}
+              >
+                {['React', 'Next.js', 'TypeScript', 'Tailwind CSS', 'Framer Motion', 'GSAP', 'Three.js', 'WebGL'].map((skill, index) => (
+                  <motion.li 
+                    key={skill} 
+                    variants={fadeInUp}
+                    custom={index * 0.05}
+                    className="rounded-md bg-gray-100 px-3 py-1 dark:bg-gray-800"
+                  >
+                    {skill}
+                  </motion.li>
+                ))}
+              </motion.ul>
+            </div>
+            
+            <div className="mb-8">
+              <MotionItem delay={0.2}>
+                <h3 className="mb-3 text-xl font-semibold">Backend Development</h3>
+              </MotionItem>
+              
+              <motion.ul 
+                className="grid grid-cols-2 gap-2 md:grid-cols-3 lg:grid-cols-4"
+                variants={staggerContainer}
+                initial="initial"
+                whileInView="animate"
+                viewport={{ once: true }}
+              >
+                {['Node.js', 'Express', 'MongoDB', 'PostgreSQL', 'GraphQL', 'REST APIs', 'Firebase', 'AWS'].map((skill, index) => (
+                  <motion.li 
+                    key={skill} 
+                    variants={fadeInUp}
+                    custom={index * 0.05}
+                    className="rounded-md bg-gray-100 px-3 py-1 dark:bg-gray-800"
+                  >
+                    {skill}
+                  </motion.li>
+                ))}
+              </motion.ul>
+            </div>
+          </GradientSection>
 
           <MotionSection className="mb-12" delay={0.3}>
             <MotionItem>
