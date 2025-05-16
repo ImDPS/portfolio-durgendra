@@ -7,52 +7,87 @@ import * as THREE from 'three';
 import { useThemeStore } from '@/store/theme-store'; 
 import { useReducedMotion } from '@/utils/use-reduced-motion';
 
-// Function to create initial particle data, now theme-aware
-function createDynamicParticles(count = 250, theme = 'dark') { 
+// Function to create initial particle data with more uniform distribution
+function createDynamicParticles(count = 50, theme = 'dark') { 
   const positions = new Float32Array(count * 3);
   const velocities = new Float32Array(count * 3);
   const baseColors = new Float32Array(count * 3);
   const sizes = new Float32Array(count); 
-  // Store initial random offsets for startup animation from the side
-  const startupOffsets = new Float32Array(count * 2); // For X and Y startup variation
+  const startupOffsets = new Float32Array(count * 2);
 
-  for (let i = 0; i < count; i++) {
-    const i3 = i * 3;
-    const i2 = i * 2;
+  // --- Grid-based distribution logic ---
+  const xRange = 28; // Total width for particle distribution
+  const yRange = 24; // Total height
+  const zRange = 18; // Total depth
 
-    positions[i3] = (Math.random() - 0.5) * 28; 
-    positions[i3 + 1] = (Math.random() - 0.5) * 24; 
-    positions[i3 + 2] = (Math.random() - 0.5) * 18; 
+  // Approximate grid dimensions to distribute 'count' particles
+  // Aim for cells that are roughly cubic or match the aspect ratio of the space
+  const particlesPerDim = Math.cbrt(count);
+  const nx = Math.ceil(particlesPerDim * (xRange / ((xRange+yRange+zRange)/3))); // Grid cells in X
+  const ny = Math.ceil(particlesPerDim * (yRange / ((xRange+yRange+zRange)/3))); // Grid cells in Y
+  const nz = Math.ceil(count / (nx * ny));                                     // Grid cells in Z
 
-    const depth = (positions[i3 + 2] + 9.0) / 18.0; 
+  const cellWidth = xRange / nx;
+  const cellHeight = yRange / ny;
+  const cellDepth = zRange / nz;
 
-    velocities[i3] = (Math.random() - 0.5) * (0.0008 + depth * 0.004); 
-    velocities[i3 + 1] = (Math.random() - 0.5) * (0.0008 + depth * 0.004);
-    velocities[i3 + 2] = (Math.random() - 0.5) * (0.0004 + depth * 0.0015);
+  let particleIndex = 0;
 
-    if (theme === 'dark') {
-      const rFar = 0.3, gFar = 0.6, bFar = 0.9;   
-      const rNear = 0.6, gNear = 0.8, bNear = 1.0; 
-      baseColors[i3]     = rFar + (rNear - rFar) * depth;       
-      baseColors[i3 + 1] = gFar + (gNear - gFar) * depth;     
-      baseColors[i3 + 2] = bFar + (bNear - bFar) * depth;     
-    } else { 
-      const rFar = 0.1, gFar = 0.2, bFar = 0.6;   
-      const rNear = 0.2, gNear = 0.35, bNear = 0.75;  
-      baseColors[i3]     = rFar + (rNear - rFar) * depth;       
-      baseColors[i3 + 1] = gFar + (gNear - gFar) * depth;     
-      baseColors[i3 + 2] = bFar + (bNear - bFar) * depth;    
+  for (let i = 0; i < nx; i++) {
+    for (let j = 0; j < ny; j++) {
+      for (let k = 0; k < nz; k++) {
+        if (particleIndex >= count) break; // Stop if we've placed all particles
+
+        const i3 = particleIndex * 3;
+        const i2 = particleIndex * 2;
+
+        // Base position of the current cell's corner
+        const baseX = -xRange / 2 + i * cellWidth;
+        const baseY = -yRange / 2 + j * cellHeight;
+        const baseZ = -zRange / 2 + k * cellDepth;
+
+        // Add random jitter within the cell
+        positions[i3]     = baseX + Math.random() * cellWidth;
+        positions[i3 + 1] = baseY + Math.random() * cellHeight;
+        positions[i3 + 2] = baseZ + Math.random() * cellDepth;
+
+        const depth = (positions[i3 + 2] + zRange / 2) / zRange; // Normalize depth from 0 to 1
+
+        velocities[i3] = (Math.random() - 0.5) * (0.0008 + depth * 0.004); 
+        velocities[i3 + 1] = (Math.random() - 0.5) * (0.0008 + depth * 0.004);
+        velocities[i3 + 2] = (Math.random() - 0.5) * (0.0004 + depth * 0.0015);
+
+        if (theme === 'dark') {
+          const rFar = 0.3, gFar = 0.6, bFar = 0.9;   
+          const rNear = 0.6, gNear = 0.8, bNear = 1.0; 
+          baseColors[i3]     = rFar + (rNear - rFar) * depth;       
+          baseColors[i3 + 1] = gFar + (gNear - gFar) * depth;     
+          baseColors[i3 + 2] = bFar + (bNear - bFar) * depth;     
+        } else { 
+          const rFar = 0.1, gFar = 0.2, bFar = 0.6;   
+          const rNear = 0.2, gNear = 0.35, bNear = 0.75;  
+          baseColors[i3]     = rFar + (rNear - rFar) * depth;       
+          baseColors[i3 + 1] = gFar + (gNear - gFar) * depth;     
+          baseColors[i3 + 2] = bFar + (bNear - bFar) * depth;    
+        }
+        sizes[i3 / 3] = (0.7 + Math.random() * 0.6) * (0.45 + depth * 0.45); 
+
+        startupOffsets[i2] = (Math.random() - 0.5) * 8; 
+        startupOffsets[i2 + 1] = (Math.random() - 0.5) * 4; 
+
+        particleIndex++;
+      }
+      if (particleIndex >= count) break;
     }
-    sizes[i] = (0.7 + Math.random() * 0.6) * (0.45 + depth * 0.45); 
-
-    // Random offsets for the startup source position on the right side
-    startupOffsets[i2] = (Math.random() - 0.5) * 8; // Y-variation for startup source
-    startupOffsets[i2 + 1] = (Math.random() - 0.5) * 4; // Z-variation for startup source (less than startZOffset)
+    if (particleIndex >= count) break;
   }
+  // If count wasn't perfectly divisible, remaining particles could be placed randomly or by extending grid logic
+  // For simplicity, we stop once 'count' particles are placed.
+
   return { positions, velocities, baseColors, sizes, startupOffsets, count };
 }
 
-// Shader for round, soft particles (remains unchanged from previous version)
+// Shader for round, soft particles (remains unchanged)
 const particleVertexShader = `
   attribute float size;
   varying vec3 vColor;
@@ -87,15 +122,15 @@ function DynamicParticles({
   const meshRef = useRef<THREE.Points>(null);
   const lineRef = useRef<THREE.LineSegments>(null);
 
-  const { viewport } = useThree(); // Removed 'size' as it wasn't used directly here
+  const { viewport } = useThree(); 
   const [mouse, setMouse] = useState({ x: 0, y: 0 });
 
   const particleData = useMemo(() => 
-    createDynamicParticles(250, resolvedTheme),
+    createDynamicParticles(100, resolvedTheme),
     [resolvedTheme] 
   );
 
-  const [startup, setStartup] = useState(0); // 0 to 1 for animation
+  const [startup, setStartup] = useState(0); 
   
   const originalPositionsRef = useRef(new Float32Array(particleData.positions)); 
   const currentPositionsRef = useRef(new Float32Array(particleData.positions)); 
@@ -108,16 +143,13 @@ function DynamicParticles({
 
 
   useEffect(() => {
-    // Initialize buffers
     dynamicColorsRef.current.set(particleData.baseColors);
-    currentPositionsRef.current.set(particleData.positions); // Start with final positions, startup animation will modify
+    currentPositionsRef.current.set(particleData.positions); 
     originalPositionsRef.current.set(particleData.positions);
     startupOffsetsRef.current.set(particleData.startupOffsets);
 
-
     if (meshRef.current) {
         const geometry = meshRef.current.geometry;
-        // Set initial attributes. currentPositionsRef will be updated in useFrame.
         geometry.setAttribute('position', new THREE.BufferAttribute(currentPositionsRef.current, 3));
         geometry.setAttribute('color', new THREE.BufferAttribute(dynamicColorsRef.current, 3));
         geometry.setAttribute('size', new THREE.BufferAttribute(particleData.sizes, 1));
@@ -156,16 +188,16 @@ function DynamicParticles({
     let frame: number;
     const animateIn = () => {
       setStartup((s) => {
-        if (s < 1) return s + 0.015; // Slightly slower startup for smoother transition from side
+        if (s < 1) return s + 0.015; 
         return 1;
       });
       if (startup < 1) frame = requestAnimationFrame(animateIn);
     };
-    animateIn(); // Start the animation
+    animateIn(); 
     return () => cancelAnimationFrame(frame);
   }, [startup]); 
 
-  useFrame(() => { // Removed clock as it wasn't used directly here
+  useFrame(() => { 
     if (!meshRef.current || !meshRef.current.geometry || !lineRef.current || !lineRef.current.geometry) return; 
 
     const pos = currentPositionsRef.current; 
@@ -177,43 +209,38 @@ function DynamicParticles({
     const count = particleData.count;
 
     let lineVertexCount = 0;
-    const connectDistance = 2.5; 
+    const connectDistance = 2.8; // Adjusted for potentially sparser but more uniform particles
     const maxConnectionsPerParticle = 1; 
 
 
     for (let i = 0; i < count; i++) {
       const i3 = i * 3;
-      const i2 = i * 2; // For startupOffsets
+      const i2 = i * 2; 
 
-      // Target positions for startup
       const targetX = originalPos[i3];
       const targetY = originalPos[i3 + 1];
       const targetZ = originalPos[i3 + 2];
 
       if (startup < 1) {
-        // --- Startup Animation from the Right Side ---
-        const sourceX = viewport.width * 0.35 + startupOffsets[i2] * 0.2; // Start from right edge + some variation
-        const sourceY = startupOffsets[i2]; // Use pre-calculated random Y offset for source
+        const sourceX = viewport.width * 0.35 + startupOffsets[i2] * 0.2; 
+        const sourceY = startupOffsets[i2]; 
         
-        const startZOffset = 15; // How far back they start on Z beyond their target
+        const startZOffset = 15; 
         const sourceZ = targetZ + startZOffset + startupOffsets[i2+1];
 
-        // Interpolate X, Y, and Z from source to target
         pos[i3]     = targetX * startup + sourceX * (1 - startup);
         pos[i3 + 1] = targetY * startup + sourceY * (1 - startup);
         pos[i3 + 2] = targetZ * startup + sourceZ * (1 - startup);
 
       } else {
-        // Regular movement after startup
         pos[i3]     += velocities[i3] * 0.6; 
         pos[i3 + 1] += velocities[i3 + 1] * 0.6 - (scrollY || 0) * 0.00007; 
         pos[i3 + 2] += velocities[i3 + 2] * 0.6;
       }
       
-      // Mouse interaction (applied after startup or during, depending on desired effect)
       const mx = mouse.x * viewport.width * 0.5;
       const my = mouse.y * viewport.height * 0.5;
-      const dx = pos[i3] - mx; // Use current pos for interaction
+      const dx = pos[i3] - mx; 
       const dy = pos[i3 + 1] - my;
       const dist = Math.sqrt(dx * dx + dy * dy);
       const interactionRadius = 1.8; 
@@ -223,11 +250,10 @@ function DynamicParticles({
         pos[i3 + 1] += (dy / dist) * forceFactor * viewport.height * 0.1;
       }
 
-      // Boundary Wrapping (applied after startup is complete for X,Y,Z)
       if (startup >= 1) {
         const xBound = viewport.width / 2 + 3; 
         const yBound = viewport.height / 2 + 3; 
-        const zBound = 9.5; 
+        const zBound = 9.5; // Corresponds to zRange/2 + buffer
 
         if (pos[i3] < -xBound) pos[i3] = xBound;
         if (pos[i3] > xBound) pos[i3] = -xBound;
@@ -237,14 +263,11 @@ function DynamicParticles({
         if (pos[i3 + 2] > zBound) pos[i3 + 2] = -zBound; 
       }
 
-
-      // Color highlighting
       const highlight = dist < interactionRadius ? 0.6 * (interactionRadius - dist) / interactionRadius : 0;
       dynColors[i3]     = Math.min(1, baseColors[i3] + highlight * 1.2); 
       dynColors[i3 + 1] = Math.min(1, baseColors[i3 + 1] + highlight * 1.0); 
       dynColors[i3 + 2] = Math.min(1, baseColors[i3 + 2] + highlight * 0.8); 
 
-      // Line connections (only after startup)
       if (startup >= 1) { 
         let connections = 0;
         for (let j = i + 1; j < count; j++) { 

@@ -31,26 +31,25 @@ export default function Home() {
             
             <MotionItem delay={0.1}>
               <h1 className="mb-6 text-4xl font-bold leading-tight md:text-5xl lg:text-6xl">
-                Hi, I'm <span className="text-primary">Durgendra</span> 
+                Hi, I'm <span className="text-primary">Durgendra Pratap Singh</span>
                 <br />
-                Web Developer & Designer
+                Data Scientist & Full-Stack Engineer
               </h1>
             </MotionItem>
             
             <MotionItem delay={0.2}>
               <p className="mb-8 max-w-2xl text-xl text-gray-700 dark:text-gray-300">
-                I build exceptional digital experiences with cutting-edge technologies.
-                Specialized in creating fast, responsive, and user-friendly web applications.
+                Results-driven Data Scientist and Team Lead with 5+ years of experience delivering sophisticated solutions in machine learning, geospatial analysis, and full-stack development. Expert in leading complex projects across agriculture, manufacturing, and power sectors, including AI-driven disease detection, geospatial visualization platforms, and automated petition systems. Recognized for achieving significant efficiency gains and cost reductions through innovative use of cloud technologies and data analytics.
               </p>
             </MotionItem>
             
             <MotionItem delay={0.3}>
               <div className="flex flex-wrap gap-4">
-                <Link href="/contact" passHref>
+                <a href="mailto:dpsmad999@gmail.com">
                   <MotionButton variant="primary" size="lg">
                     Get in Touch
                   </MotionButton>
-                </Link>
+                </a>
                 <Link href="/projects" passHref>
                   <MotionButton variant="outline" size="lg">
                     View Projects
