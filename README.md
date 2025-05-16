@@ -2,7 +2,9 @@
 
 A modern, customizable portfolio website built with Next.js, Three.js, and TailwindCSS. This template offers an interactive 3D experience, content management through Contentlayer, and responsive design.
 
-![Portfolio Template](https://via.placeholder.com/800x400?text=Portfolio+Template)
+## Screenshot
+![Portfolio Screenshot](https://mnscdttmmwkfyosjhaij.supabase.co/storage/v1/object/public/images-public/screens/Screenshot%202025-05-16%20at%202.41.45%20PM.png)
+
 
 ## Features
 
