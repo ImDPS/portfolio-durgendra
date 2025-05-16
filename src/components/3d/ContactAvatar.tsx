@@ -27,9 +27,9 @@ export default function ContactAvatar() {
 }
 
 function AnimatedEnvelope() {
-  const meshRef = useRef();
-  const materialRef = useRef();
-  const envelopeGroup = useRef();
+  const meshRef = useRef<THREE.Mesh>(null);
+  const materialRef = useRef<THREE.MeshPhysicalMaterial>(null);
+  const envelopeGroup = useRef<THREE.Group>(null);
   
   // Create envelope geometry on mount
   useEffect(() => {
