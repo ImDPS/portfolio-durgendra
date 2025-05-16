@@ -26,8 +26,7 @@ const ParallaxSection = ({
   const sectionRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const prefersReducedMotion = useReducedMotion();
-  const triggerRef = useRef<ScrollTrigger | null>(null);
-
+  
   useEffect(() => {
     // Don't run on server
     if (typeof window === 'undefined') return;
@@ -40,17 +39,11 @@ const ParallaxSection = ({
     
     if (!section || !content) return;
 
-    // Clean up any existing ScrollTrigger
-    if (triggerRef.current) {
-      triggerRef.current.kill();
-      triggerRef.current = null;
-    }
-    
     // Apply the parallax effect
     const yFactor = direction === 'up' ? -1 : 1;
     const distance = Math.min(20, section.offsetHeight * speed);
     
-    gsap.fromTo(
+    const animation = gsap.fromTo(
       content,
       { y: 0 },
       {
@@ -78,9 +71,13 @@ const ParallaxSection = ({
     
     return () => {
       window.removeEventListener('resize', handleResize);
-      if (triggerRef.current) {
-        triggerRef.current.kill();
+      // Kill the animation which will also clean up the associated ScrollTrigger
+      if (animation) {
+        animation.kill();
       }
+      
+      // Clean up ScrollTrigger
+      ScrollTrigger.refresh();
     };
   }, [prefersReducedMotion, speed, direction]);
 
