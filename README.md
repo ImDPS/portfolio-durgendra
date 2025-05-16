@@ -90,13 +90,22 @@ portfolio-durgendra/
 ### Next.js Configuration
 The project uses TypeScript for Next.js configuration (`next.config.ts`):
 ```typescript
-{
+const { withContentlayer } = require('next-contentlayer');
+
+/** @type {import('next').NextConfig} */
+const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
   images: {
     domains: ['images.unsplash.com', 'unsplash.com'],
-  }
-}
+  },
+  webpack: (config) => {
+    config.resolve.fallback = { fs: false, path: false };
+    return config;
+  },
+};
+
+module.exports = withContentlayer(nextConfig);
 ```
 
 ### Contentlayer Setup
@@ -106,9 +115,12 @@ The project includes a prepare script (`scripts/prepare-install.js`) that automa
 The project includes a `vercel.json` configuration for optimal deployment on Vercel:
 ```json
 {
-  "buildCommand": "npm install --legacy-peer-deps && npm run build",
-  "installCommand": "npm install --legacy-peer-deps"
-}
+  "buildCommand": "npm run build",
+  "devCommand": "npm run dev",
+  "installCommand": "npm install --legacy-peer-deps",
+  "framework": "nextjs",
+  "outputDirectory": ".next"
+} 
 ```
 
 ## Customization
