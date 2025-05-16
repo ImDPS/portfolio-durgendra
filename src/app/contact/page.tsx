@@ -109,6 +109,28 @@ export default function ContactPage() {
               <h1 className="mb-6 text-3xl font-bold md:text-4xl lg:text-5xl">Get in Touch</h1>
             </MotionItem>
             
+            <MotionItem delay={0.05}>
+              <div className="mb-8 flex flex-col md:flex-row md:items-center md:gap-8 text-gray-700 dark:text-gray-300">
+                <div className="flex items-center gap-2 mb-2 md:mb-0">
+                  <svg className="text-primary w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2C6.13 2 3 5.13 3 9c0 5.25 7 11 7 11s7-5.75 7-11c0-3.87-3.13-7-7-7zm0 9.5A2.5 2.5 0 1 1 10 6a2.5 2.5 0 0 1 0 5.5z" /></svg> Raipur, Chhattisgarh, India
+                </div>
+                <div className="flex items-center gap-2 mb-2 md:mb-0">
+                  <svg className="text-primary w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M2.94 6.94a1.5 1.5 0 0 1 2.12 0l4.94 4.94 4.94-4.94a1.5 1.5 0 1 1 2.12 2.12l-6 6a1.5 1.5 0 0 1-2.12 0l-6-6a1.5 1.5 0 0 1 0-2.12z" /></svg> <a href="mailto:dpsmad999@gmail.com" className="hover:underline">dpsmad999@gmail.com</a>
+                </div>
+                <div className="flex items-center gap-2 mb-2 md:mb-0">
+                  <svg className="text-primary w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M2 3.5A1.5 1.5 0 0 1 3.5 2h13A1.5 1.5 0 0 1 18 3.5v13A1.5 1.5 0 0 1 16.5 18h-13A1.5 1.5 0 0 1 2 16.5v-13zm2 0v13h12v-13H4zm6 2a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm-4 2a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm8 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm-8 4a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm8 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm-4 2a1 1 0 1 1 0 2 1 1 0 0 1 0-2z" /></svg> <span className="select-all">(+91) 9131706915</span>
+                </div>
+                <div className="flex items-center gap-4 ml-2">
+                  <a href="https://linkedin.com/in/durgendra" target="_blank" rel="noopener noreferrer" className="hover:text-primary" aria-label="LinkedIn">
+                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.76 0-5 2.24-5 5v14c0 2.76 2.24 5 5 5h14c2.76 0 5-2.24 5-5v-14c0-2.76-2.24-5-5-5zm-11 19h-3v-9h3v9zm-1.5-10.28c-.97 0-1.75-.79-1.75-1.75s.78-1.75 1.75-1.75 1.75.79 1.75 1.75-.78 1.75-1.75 1.75zm13.5 10.28h-3v-4.5c0-1.08-.02-2.47-1.5-2.47-1.5 0-1.73 1.17-1.73 2.39v4.58h-3v-9h2.89v1.23h.04c.4-.75 1.37-1.54 2.82-1.54 3.01 0 3.57 1.98 3.57 4.56v4.75zm0 0"/></svg>
+                  </a>
+                  <a href="https://github.com/durgendra" target="_blank" rel="noopener noreferrer" className="hover:text-primary" aria-label="GitHub">
+                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+                  </a>
+                </div>
+              </div>
+            </MotionItem>
+            
             <MotionItem delay={0.1}>
               <p className="mb-8 max-w-3xl text-lg text-gray-700 dark:text-gray-300">
                 Have a project in mind or just want to say hello? Fill out the form below and I'll get back to you as soon as possible.

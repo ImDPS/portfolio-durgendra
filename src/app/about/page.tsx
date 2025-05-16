@@ -31,22 +31,25 @@ export default function AboutPage() {
             <MotionItem delay={0.1}>
               <div className="mb-6 flex flex-col md:flex-row md:items-center md:gap-8 text-gray-700 dark:text-gray-300">
                 <div className="flex items-center gap-2 mb-2 md:mb-0">
-                  <FaMapMarkerAlt className="text-primary" /> Raipur, Chhattisgarh, India
+                  <svg className="text-primary w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2C6.13 2 3 5.13 3 9c0 5.25 7 11 7 11s7-5.75 7-11c0-3.87-3.13-7-7-7zm0 9.5A2.5 2.5 0 1 1 10 6a2.5 2.5 0 0 1 0 5.5z" /></svg> Raipur, Chhattisgarh, India
                 </div>
                 <div className="flex items-center gap-2 mb-2 md:mb-0">
-                  <FaEnvelope className="text-primary" /> <a href="mailto:dpsmad999@gmail.com" className="hover:underline">dpsmad999@gmail.com</a>
+                  <svg className="text-primary w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M2.94 6.94a1.5 1.5 0 0 1 2.12 0l4.94 4.94 4.94-4.94a1.5 1.5 0 1 1 2.12 2.12l-6 6a1.5 1.5 0 0 1-2.12 0l-6-6a1.5 1.5 0 0 1 0-2.12z" /></svg> <a href="mailto:dpsmad999@gmail.com" className="hover:underline">dpsmad999@gmail.com</a>
                 </div>
                 <div className="flex items-center gap-2">
-                  <FaPhoneAlt className="text-primary" /> <span className="select-all">(+91) 9131706915</span>
+                  <svg className="text-primary w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M2 3.5A1.5 1.5 0 0 1 3.5 2h13A1.5 1.5 0 0 1 18 3.5v13A1.5 1.5 0 0 1 16.5 18h-13A1.5 1.5 0 0 1 2 16.5v-13zm2 0v13h12v-13H4zm6 2a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm-4 2a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm8 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm-8 4a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm8 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm-4 2a1 1 0 1 1 0 2 1 1 0 0 1 0-2z" /></svg> <span className="select-all">(+91) 9131706915</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <a href="/Durgendra_Pratap_Singh_Resume.pdf" download className="flex items-center gap-1 text-primary hover:underline"><FaDownload /> Download Resume</a>
+                  <a href="/Durgendra_Pratap_Singh_Resume.md" download className="flex items-center gap-1 text-primary hover:underline"><svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M13 7h-2V3H9v4H7l3 3 3-3zm-2 6v-2H9v2H5v2h10v-2h-4z" /></svg> Download Resume (.md)</a>
                 </div>
               </div>
             </MotionItem>
             <MotionItem delay={0.2}>
               <p className="mb-8 text-lg text-gray-700 dark:text-gray-300">
-                Results-driven Data Scientist and Team Lead with over 5 years of experience delivering sophisticated solutions in machine learning, geospatial analysis, and full-stack development. I’m passionate about building impactful technology for agriculture, manufacturing, and power sectors, and thrive on solving complex problems with data and code.
+                Results-driven Data Scientist and Team Lead with 5+ years of experience delivering sophisticated solutions in machine learning, geospatial analysis, and full-stack development. Expert in leading complex projects across agriculture, manufacturing, and power sectors, including AI-driven disease detection, geospatial visualization platforms, and automated petition systems. Recognized for achieving significant efficiency gains and cost reductions through innovative use of cloud technologies and data analytics.
+              </p>
+              <p className="mb-8 text-lg text-gray-700 dark:text-gray-300">
+                I'm passionate about building impactful technology for agriculture, manufacturing, and power sectors, and thrive on solving complex problems with data and code.
               </p>
             </MotionItem>
           </MotionSection>

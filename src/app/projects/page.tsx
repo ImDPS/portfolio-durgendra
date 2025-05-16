@@ -50,6 +50,17 @@ export default function ProjectsPage() {
                 </div>
                 <div className="p-6">
                   <h2 className="mb-2 text-xl font-semibold transition-colors group-hover:text-primary">{project.title}</h2>
+                  <div className="mb-2 text-sm text-gray-500 dark:text-gray-400 flex flex-wrap gap-4">
+                    <span><strong>Role:</strong> {project.role}</span>
+                    <span><strong>Duration:</strong> {project.duration}</span>
+                  </div>
+                  {project.achievements && project.achievements.length > 0 && (
+                    <ul className="mb-2 list-disc list-inside text-sm text-gray-600 dark:text-gray-400">
+                      {project.achievements.map((ach, i) => (
+                        <li key={i}>{ach}</li>
+                      ))}
+                    </ul>
+                  )}
                   <p className="mb-4 text-gray-600 dark:text-gray-400">
                     {project.description}
                   </p>
