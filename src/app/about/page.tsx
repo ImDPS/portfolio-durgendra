@@ -7,6 +7,7 @@ import MotionItem from '@/components/motion/MotionItem';
 import ScrollSection from '@/components/gsap/ScrollSection';
 import GradientSection from '@/components/ui/GradientSection';
 import SkillsGlobe from '@/components/3d/SkillsGlobe';
+import InteractiveAvatar from '@/components/3d/InteractiveAvatar';
 import { motion } from 'framer-motion';
 import { fadeInUp, staggerContainer } from '@/utils/animations';
 
@@ -16,6 +17,12 @@ export default function AboutPage() {
       <Container>
         <div className="mx-auto max-w-4xl">
           <MotionSection>
+            <MotionItem>
+              <div className="mb-8 w-full flex justify-center">
+                <InteractiveAvatar />
+              </div>
+            </MotionItem>
+            
             <MotionItem>
               <h1 className="mb-6 text-3xl font-bold md:text-4xl lg:text-5xl">
                 About Me

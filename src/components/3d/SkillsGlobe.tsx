@@ -6,6 +6,7 @@ import * as THREE from 'three';
 import { useThemeStore } from '@/store/theme-store';
 import { useReducedMotion } from '@/utils/use-reduced-motion';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
+import { Html } from '@react-three/drei';
 
 interface Skill {
   name: string;
@@ -76,6 +77,7 @@ function SkillsPoints({ prefersReducedMotion }: { prefersReducedMotion: boolean 
   const pointsRef = useRef<THREE.Points>(null!);
   const [hovered, setHovered] = useState<number | null>(null);
   const [hoveredSkill, setHoveredSkill] = useState<string | null>(null);
+  const [hoveredPosition, setHoveredPosition] = useState<[number, number, number] | null>(null);
   
   const { positions, colors, sizes } = generateGlobePoints();
   
@@ -109,10 +111,16 @@ function SkillsPoints({ prefersReducedMotion }: { prefersReducedMotion: boolean 
       if (intersection.index !== undefined) {
         setHovered(intersection.index);
         setHoveredSkill(skillsData[intersection.index]?.name || null);
+        setHoveredPosition([
+          positions[intersection.index * 3],
+          positions[intersection.index * 3 + 1],
+          positions[intersection.index * 3 + 2],
+        ]);
       }
     } else {
       setHovered(null);
       setHoveredSkill(null);
+      setHoveredPosition(null);
     }
   };
 
@@ -124,6 +132,7 @@ function SkillsPoints({ prefersReducedMotion }: { prefersReducedMotion: boolean 
         onPointerOut={() => {
           setHovered(null);
           setHoveredSkill(null);
+          setHoveredPosition(null);
         }}
       >
         <bufferGeometry />
@@ -136,24 +145,23 @@ function SkillsPoints({ prefersReducedMotion }: { prefersReducedMotion: boolean 
         />
       </points>
       
-      {/* Render skill name on hover */}
-      {hovered !== null && (
-        <mesh position={[positions[hovered * 3], positions[hovered * 3 + 1], positions[hovered * 3 + 2]]}>
-          <sphereGeometry args={[0.05, 16, 16]} />
-          <meshBasicMaterial color="white" />
+      {/* Highlight hovered point */}
+      {hovered !== null && hoveredPosition && (
+        <mesh position={hoveredPosition}>
+          <sphereGeometry args={[0.18, 24, 24]} />
+          <meshBasicMaterial color="#f59e42" opacity={0.7} transparent />
         </mesh>
       )}
       
-      {hoveredSkill && (
-        <mesh>
-          {/* This is just a dummy mesh to hold the userData for skill name display */}
-          <boxGeometry args={[0.01, 0.01, 0.01]} />
-          <meshBasicMaterial opacity={0} transparent />
-          <primitive
-            object={new THREE.Object3D()}
-            userData={{ skillName: hoveredSkill }}
-          />
-        </mesh>
+      {/* Tooltip for hovered skill */}
+      {hoveredSkill && hoveredPosition && (
+        <Html position={hoveredPosition} center style={{ pointerEvents: 'none' }}>
+          <div className="px-3 py-2 rounded bg-gray-900 text-white text-xs shadow-lg border border-primary">
+            <strong>{hoveredSkill}</strong>
+            <br />
+            Level: {skillsData[hovered!].level}/10
+          </div>
+        </Html>
       )}
     </group>
   );
@@ -180,7 +188,7 @@ const SkillLegend = () => {
   };
   
   return (
-    <div className="absolute top-4 right-4 bg-white/80 dark:bg-gray-800/80 p-3 rounded-md text-sm">
+    <div className="absolute top-4 right-4 bg-white/80 dark:bg-gray-800/80 p-3 rounded-md text-sm z-20">
       <h4 className="font-medium mb-2">Legend</h4>
       <div className="space-y-1">
         {categories.map(category => (
@@ -192,6 +200,10 @@ const SkillLegend = () => {
             <span className="capitalize">{category}</span>
           </div>
         ))}
+      </div>
+      <div className="mt-2 text-xs text-gray-600 dark:text-gray-300">
+        <span className="block">Hover over a point to see the skill and level.</span>
+        <span className="block">Point size = skill level.</span>
       </div>
     </div>
   );

@@ -11,6 +11,8 @@ import HeroBackground from '@/components/3d/HeroBackground';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { fadeInUp, cardVariants } from '@/utils/animations';
+import { projects } from '@/data/projects';
+import InteractiveAvatar from '@/components/3d/InteractiveAvatar';
 
 export default function Home() {
   return (
@@ -22,6 +24,12 @@ export default function Home() {
         <Container>
           <MotionSection className="min-h-[600px] flex flex-col justify-center relative z-10">
             <MotionItem>
+              <div className="mb-8 w-full flex justify-center">
+                <InteractiveAvatar />
+              </div>
+            </MotionItem>
+            
+            <MotionItem delay={0.1}>
               <h1 className="mb-6 text-4xl font-bold leading-tight md:text-5xl lg:text-6xl">
                 Hi, I'm <span className="text-primary">Durgendra</span> 
                 <br />
@@ -29,14 +37,14 @@ export default function Home() {
               </h1>
             </MotionItem>
             
-            <MotionItem delay={0.1}>
+            <MotionItem delay={0.2}>
               <p className="mb-8 max-w-2xl text-xl text-gray-700 dark:text-gray-300">
                 I build exceptional digital experiences with cutting-edge technologies.
                 Specialized in creating fast, responsive, and user-friendly web applications.
               </p>
             </MotionItem>
             
-            <MotionItem delay={0.2}>
+            <MotionItem delay={0.3}>
               <div className="flex flex-wrap gap-4">
                 <Link href="/contact" passHref>
                   <MotionButton variant="primary" size="lg">
@@ -72,9 +80,9 @@ export default function Home() {
           </MotionItem>
           
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {[1, 2, 3].map((project, index) => (
+            {projects.slice(0, 3).map((project, index) => (
               <motion.div
-                key={`project-${project}`}
+                key={project.id}
                 variants={cardVariants}
                 initial="initial"
                 whileInView="animate"
@@ -83,13 +91,13 @@ export default function Home() {
                 custom={index}
                 className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm transition-all hover:shadow-md dark:border-gray-700 dark:bg-gray-800"
               >
-                <div className="bg-gray-200 p-4 dark:bg-gray-700">Project Image Placeholder</div>
+                <img src={project.imageUrl} alt={project.title} className="w-full h-40 object-contain bg-gray-50 p-4" />
                 <div className="p-6">
-                  <h3 className="mb-2 text-xl font-semibold">Project {project}</h3>
+                  <h3 className="mb-2 text-xl font-semibold">{project.title}</h3>
                   <p className="mb-4 text-gray-600 dark:text-gray-400">
-                    A brief description of the project, technologies used, and outcomes.
+                    {project.description}
                   </p>
-                  <Link href="#" className="text-primary hover:underline">
+                  <Link href={`/projects/${project.id}`} className="text-primary hover:underline">
                     View Details
                   </Link>
                 </div>

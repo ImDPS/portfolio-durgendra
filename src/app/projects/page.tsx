@@ -8,43 +8,9 @@ import ProjectModel from '@/components/3d/ProjectModel';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { cardVariants, staggerContainer } from '@/utils/animations';
+import { projects } from '@/data/projects';
 
 export default function ProjectsPage() {
-  const projects = [
-    {
-      id: 'ecommerce',
-      title: 'E-Commerce Platform',
-      description: 'A complete e-commerce solution with product management, shopping cart, and payment integration.',
-      technologies: ['React', 'Node.js', 'MongoDB'],
-      imageUrl: '/placeholder.jpg',
-      type: 'website',
-    },
-    {
-      id: 'portfolio',
-      title: 'Portfolio Website',
-      description: 'A modern portfolio website with interactive 3D elements and animations.',
-      technologies: ['Next.js', 'Three.js', 'GSAP'],
-      imageUrl: '/placeholder.jpg',
-      type: 'website',
-    },
-    {
-      id: 'dashboard',
-      title: 'Dashboard Application',
-      description: 'A data visualization dashboard with real-time updates and analytics.',
-      technologies: ['React', 'D3.js', 'GraphQL'],
-      imageUrl: '/placeholder.jpg',
-      type: 'dashboard',
-    },
-    {
-      id: 'mobile-app',
-      title: 'Mobile Application',
-      description: 'A cross-platform mobile app for task management and productivity.',
-      technologies: ['React Native', 'Redux', 'Firebase'],
-      imageUrl: '/placeholder.jpg',
-      type: 'mobile',
-    }
-  ];
-
   return (
     <MotionPage className="py-12 md:py-20">
       <Container>
@@ -79,13 +45,8 @@ export default function ProjectsPage() {
                 custom={index * 0.1}
                 className="group overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm transition-all hover:shadow-lg dark:border-gray-700 dark:bg-gray-800"
               >
-                <div className="relative aspect-video overflow-hidden bg-gray-200 dark:bg-gray-700">
-                  <ProjectModel 
-                    type={project.type as any}
-                    image={project.imageUrl}
-                    height={240}
-                    interactive={false}
-                  />
+                <div className="flex items-center justify-center h-48 bg-gray-50 dark:bg-gray-900">
+                  <img src={project.imageUrl} alt={project.title} className="h-32 object-contain" />
                 </div>
                 <div className="p-6">
                   <h2 className="mb-2 text-xl font-semibold transition-colors group-hover:text-primary">{project.title}</h2>

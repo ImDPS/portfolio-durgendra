@@ -100,6 +100,12 @@ export default function ContactPage() {
         <div className="mx-auto max-w-4xl">
           <MotionSection>
             <MotionItem>
+              <div className="mb-8 w-full max-w-2xl mx-auto">
+                <img src="https://images.unsplash.com/photo-1503676382389-4809596d5290?auto=format&fit=crop&w=900&q=80" alt="Contact Durgendra" className="rounded-xl w-full object-cover shadow-lg" />
+              </div>
+            </MotionItem>
+            
+            <MotionItem>
               <h1 className="mb-6 text-3xl font-bold md:text-4xl lg:text-5xl">Get in Touch</h1>
             </MotionItem>
             

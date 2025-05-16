@@ -25,7 +25,7 @@ const posts = [
     title: 'Getting Started with Next.js',
     description: 'Learn how to build modern web applications with Next.js',
     date: new Date('2023-06-15'),
-    image: '/placeholder.jpg',
+    image: 'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&w=800&q=80',
     tags: ['nextjs', 'react', 'javascript'],
     url: '/blog/getting-started-with-nextjs',
   },
@@ -33,7 +33,7 @@ const posts = [
     title: 'Mastering Tailwind CSS',
     description: 'Tips and tricks for building beautiful interfaces with Tailwind CSS',
     date: new Date('2023-07-20'),
-    image: '/placeholder.jpg',
+    image: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=800&q=80',
     tags: ['css', 'tailwind', 'frontend'],
     url: '/blog/mastering-tailwind-css',
   },
@@ -41,7 +41,7 @@ const posts = [
     title: 'Building 3D Experiences with React Three Fiber',
     description: 'Create immersive 3D experiences on the web using React and Three.js',
     date: new Date('2023-08-10'),
-    image: '/placeholder.jpg',
+    image: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80',
     tags: ['three.js', 'react', '3d'],
     url: '/blog/building-3d-experiences',
   },
@@ -49,7 +49,7 @@ const posts = [
     title: 'Animation Techniques for Modern Web Apps',
     description: 'Learn advanced animation techniques using GSAP and Framer Motion',
     date: new Date('2023-09-05'),
-    image: '/placeholder.jpg',
+    image: 'https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=800&q=80',
     tags: ['animation', 'gsap', 'framer-motion'],
     url: '/blog/animation-techniques',
   },
@@ -79,18 +79,10 @@ export default function BlogPage() {
                   No posts available yet. Check back soon!
                 </p>
               ) : (
-                <motion.div
-                  className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 w-full"
-                  variants={staggerContainer}
-                  initial="initial"
-                  animate="animate"
-                >
-                  {posts.map((post, index) => (
-                    <motion.article
-                      key={post.url}
-                      variants={cardVariants}
-                      custom={index * 0.1}
-                      className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm transition-all hover:shadow-md dark:border-gray-700 dark:bg-gray-800"
+                posts.map((post, index) => (
+                  <MotionItem key={post.url} delay={index * 0.1}>
+                    <article
+                      className="flex flex-col h-full overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm transition-all hover:shadow-md dark:border-gray-700 dark:bg-gray-800"
                     >
                       <Link href={post.url} className="block h-full">
                         <div className="relative aspect-video overflow-hidden bg-gray-200 dark:bg-gray-700">
@@ -108,7 +100,7 @@ export default function BlogPage() {
                             </div>
                           )}
                         </div>
-                        <div className="p-6">
+                        <div className="p-6 flex flex-col h-full">
                           <div className="mb-2 flex items-center text-sm text-gray-500 dark:text-gray-400">
                             <time dateTime={post.date.toISOString()}>
                               {formatDate(post.date)}
@@ -120,9 +112,8 @@ export default function BlogPage() {
                           <p className="mb-4 text-gray-600 dark:text-gray-400">
                             {post.description}
                           </p>
-                          
                           {post.tags && post.tags.length > 0 && (
-                            <div className="flex flex-wrap gap-2">
+                            <div className="flex flex-wrap gap-2 mt-auto">
                               {post.tags.map((tag) => (
                                 <span
                                   key={tag}
@@ -135,9 +126,9 @@ export default function BlogPage() {
                           )}
                         </div>
                       </Link>
-                    </motion.article>
-                  ))}
-                </motion.div>
+                    </article>
+                  </MotionItem>
+                ))
               )}
             </div>
           </GradientSection>
