@@ -183,7 +183,7 @@ export default function Home() {
           </div>
         </GradientSection>
 
-        <MotionSection className="mb-16" customDelay={0.3}> {/* Assuming customDelay is a prop your MotionSection handles */}
+        <MotionSection className="mb-16" delay={0.3}> {/* Using the correct delay prop that MotionSection accepts */}
           <MotionItem>
             <h2 className="mb-8 text-2xl font-bold md:text-3xl text-center md:text-left"> {/* Centered on small, left on medium+ */}
               Featured Projects
