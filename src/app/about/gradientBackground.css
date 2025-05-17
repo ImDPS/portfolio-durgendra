@@ -1,0 +1,36 @@
+.gradient-background {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0E1824 0%, #1A2837 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.gradientBackground::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(
+    circle at center,
+    rgba(255, 107, 107, 0.1) 0%,
+    transparent 70%
+  );
+  animation: rotate 30s linear infinite;
+  z-index: 0;
+}
+
+.content {
+  position: relative;
+  z-index: 1;
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}

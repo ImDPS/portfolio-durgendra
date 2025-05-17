@@ -6,12 +6,14 @@ interface NewsletterSectionProps {
   title?: string;
   description?: string;
   className?: string;
+  children?: React.ReactNode;
 }
 
 export const NewsletterSection = ({
   title = "Stay Updated",
   description = "Subscribe to my newsletter to receive updates on new blog posts, projects, and insights.",
-  className = ''
+  className = '',
+  children
 }: NewsletterSectionProps) => {
   return (
     <MotionSection className={`mt-24 ${className}`}>
@@ -48,6 +50,7 @@ export const NewsletterSection = ({
                 Subscribe
               </button>
             </form>
+            {children}
           </MotionItem>
         </div>
       </div>

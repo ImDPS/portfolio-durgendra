@@ -7,7 +7,6 @@ import MotionPage from '@/components/motion/MotionPage';
 import MotionSection from '@/components/motion/MotionSection';
 import MotionItem from '@/components/motion/MotionItem';
 import MotionButton from '@/components/motion/MotionButton';
-import { motion } from 'framer-motion';
 
 const ContactPage = () => {
   const [formData, setFormData] = useState({
