@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, FormEvent, ChangeEvent } from 'react';
+import { useState, FormEvent, ChangeEvent, useEffect } from 'react';
+import { motion, useAnimation } from 'framer-motion';
 import Container from '@/components/ui/Container';
 import MotionPage from '@/components/motion/MotionPage';
 import MotionSection from '@/components/motion/MotionSection';

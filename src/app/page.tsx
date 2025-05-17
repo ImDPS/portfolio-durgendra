@@ -247,6 +247,23 @@ export default function Home() {
               viewport={{ once: true }}
               transition={{ duration: 0.5 }}
             >
+              Making the Web Beautiful & Intelligent
+            </motion.h2>
+            <motion.p 
+              className="mx-auto max-w-2xl text-lg text-gray-700 dark:text-gray-300"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.5 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+            >
+              Combining artistic design with technical expertise to create memorable, data-driven user experiences that stand out.
+            </motion.p>
+          </div>
+        </GradientSection>
+
+        <MotionSection className="mb-16" customDelay={0.3}> {/* Assuming customDelay is a prop your MotionSection handles */}
+          <MotionItem>
+            <h2 className="mb-8 text-2xl font-bold md:text-3xl text-center md:text-left"> {/* Centered on small, left on medium+ */}
               Featured Projects
             </motion.h2>
             
