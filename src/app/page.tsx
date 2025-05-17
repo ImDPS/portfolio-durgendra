@@ -158,14 +158,17 @@ export default function Home() {
                     }}
                     transition={{ delay: 0.6 }}
                   >
-                    <a href="mailto:dpsmad999@gmail.com">
+                    <a href="mailto:dpsmad999@gmail.com" className="group">
                       <MotionButton 
                         variant="primary" 
                         size="lg" 
                         aria-label="Get in touch via email"
-                        className="bg-[#FF6B6B] hover:bg-[#FF5252] text-white"
+                        className="relative overflow-hidden bg-gradient-to-r from-[#FF6B6B] to-[#FF8E53] text-white px-8 py-3 rounded-lg font-medium text-lg shadow-lg hover:shadow-xl hover:shadow-[#FF6B6B]/20 transition-all duration-300 transform hover:-translate-y-0.5 hover:scale-[1.02]"
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
                       >
-                        Get in Touch
+                        <span className="relative z-10">Get in Touch</span>
+                        <span className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg"></span>
                       </MotionButton>
                     </a>
                     <Link href="/projects" passHref>

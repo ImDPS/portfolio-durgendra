@@ -3,6 +3,9 @@ import rehypePrettyCode from 'rehype-pretty-code';
 import rehypeSlug from 'rehype-slug';
 import remarkGfm from 'remark-gfm';
 
+// Normalize line endings for Windows
+const normalizeLineEndings = (str: string) => str.replace(/\r\n/g, '\n');
+
 export const Post = defineDocumentType(() => ({
   name: 'Post',
   filePathPattern: `posts/**/*.mdx`,
@@ -23,6 +26,15 @@ export const Post = defineDocumentType(() => ({
     published: {
       type: 'boolean',
       default: true,
+      resolve: (published: any) => {
+        if (published === undefined || published === null) {
+          return true; // Default value if not provided
+        }
+        if (typeof published === 'string') {
+          return published.replace(/[\r\n]+/g, '').trim().toLowerCase() === 'true';
+        }
+        return Boolean(published);
+      },
     },
     image: {
       type: 'string',
@@ -49,6 +61,7 @@ export const Post = defineDocumentType(() => ({
 export default makeSource({
   contentDirPath: 'content',
   documentTypes: [Post],
+  disableImportAliasWarning: true,
   mdx: {
     remarkPlugins: [remarkGfm],
     rehypePlugins: [

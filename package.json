@@ -13,6 +13,8 @@
     "@hookform/resolvers": "^5.0.1",
     "@react-three/drei": "^9.88.0",
     "@react-three/fiber": "^8.15.11",
+    "@types/animejs": "^3.1.13",
+    "animejs": "^4.0.2",
     "autoprefixer": "^10.4.16",
     "clsx": "^2.0.0",
     "contentlayer": "^0.3.4",

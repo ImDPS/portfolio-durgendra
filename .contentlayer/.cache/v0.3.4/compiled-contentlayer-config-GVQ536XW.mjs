@@ -22,7 +22,16 @@ var Post = defineDocumentType(() => ({
     },
     published: {
       type: "boolean",
-      default: true
+      default: true,
+      resolve: (published) => {
+        if (published === void 0 || published === null) {
+          return true;
+        }
+        if (typeof published === "string") {
+          return published.replace(/[\r\n]+/g, "").trim().toLowerCase() === "true";
+        }
+        return Boolean(published);
+      }
     },
     image: {
       type: "string",
@@ -48,6 +57,7 @@ var Post = defineDocumentType(() => ({
 var contentlayer_config_default = makeSource({
   contentDirPath: "content",
   documentTypes: [Post],
+  disableImportAliasWarning: true,
   mdx: {
     remarkPlugins: [remarkGfm],
     rehypePlugins: [
@@ -76,4 +86,4 @@ export {
   Post,
   contentlayer_config_default as default
 };
-//# sourceMappingURL=compiled-contentlayer-config-F7WFV4KG.mjs.map
+//# sourceMappingURL=compiled-contentlayer-config-GVQ536XW.mjs.map

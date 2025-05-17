@@ -5,7 +5,20 @@ const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
   images: {
-    domains: ['images.unsplash.com', 'unsplash.com', 'mnscdttmmwkfyosjhaij.supabase.co'],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'unsplash.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'mnscdttmmwkfyosjhaij.supabase.co',
+      },
+    ],
   },
   webpack: (config) => {
     config.resolve.fallback = { fs: false, path: false };

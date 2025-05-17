@@ -26,10 +26,10 @@ declare global {
 
 type ParticleSystemProps = {
   count?: number;
-  color?: string;
+  color?: string;  
 };
 
-const ParticleSystem = ({ count = 1200, color: particleColor = '#FF6B6B' }: ParticleSystemProps) => {
+const ParticleSystem = ({ count = 200, color: particleColor = '#FF6B6B' }: ParticleSystemProps) => {
   const { camera, mouse, viewport } = useThree();
   const pointsRef = useRef<THREE.Points>(null);
   const materialRef = useRef<THREE.PointsMaterial>(null);
