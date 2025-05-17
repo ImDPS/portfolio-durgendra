@@ -8,6 +8,8 @@ export type Project = {
   technologies: string[];
   imageUrl: string;
   type: 'experience' | 'academic';
+  demoUrl?: string;
+  githubUrl?: string;
 };
 
 export const projects: Project[] = [
@@ -22,7 +24,7 @@ export const projects: Project[] = [
       'Integrated advanced mapping and visualization features',
     ],
     technologies: ['OpenLayer', 'GeoServer', 'PostGIS', 'React', 'Node.js'],
-    imageUrl: '/images/projects/geospatial.png',
+    imageUrl: 'https://mnscdttmmwkfyosjhaij.supabase.co/storage/v1/object/public/images-public/project/geospatial/geospatial_visualisation_platform.png',
     type: 'academic',
   },
   {

@@ -6,8 +6,26 @@ import Container from '@/components/ui/Container';
 import MotionPage from '@/components/motion/MotionPage';
 import MotionSection from '@/components/motion/MotionSection';
 import MotionItem from '@/components/motion/MotionItem';
-import GradientSection from '@/components/ui/GradientSection';
 import { motion } from 'framer-motion';
+import styles from './gradientBackground.module.css';
+// Inline SVG Icons with updated coral pink color
+const ArrowRightIcon = () => (
+  <svg className="inline ml-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+  </svg>
+);
+
+const CalendarIcon = () => (
+  <svg className="mr-1.5 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+  </svg>
+);
+
+const TagIcon = () => (
+  <svg className="text-[#FF6B6B] mt-0.5 mr-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A2 2 0 013 12V7a4 4 0 014-4z" />
+  </svg>
+);
 import { cardVariants, staggerContainer } from '@/utils/animations';
 
 // Helper function to format dates
@@ -57,23 +75,35 @@ const posts = [
 
 export default function BlogPage() {
   return (
-    <MotionPage className="py-12 md:py-20">
-      <Container>
-        <div className="mx-auto max-w-6xl">
-          <MotionSection>
-            <MotionItem>
-              <h1 className="mb-6 text-3xl font-bold md:text-4xl lg:text-5xl">Blog</h1>
-            </MotionItem>
+    <div className={styles.gradientBackground}>
+      <MotionPage className="py-12 md:py-20">
+        <div className={styles.content}>
+          <Container>
+            <div className="max-w-7xl mx-auto">
+              <MotionSection>
+              <MotionItem>
+                <div className="text-center mb-16">
+                  <motion.h1 
+                    className="text-4xl md:text-6xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-[#1A2837] to-[#FF6B6B]"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5 }}
+                  >
+                    Blog & Articles
+                  </motion.h1>
+                  <motion.p 
+                    className="text-lg max-w-2xl mx-auto bg-clip-text text-transparent bg-gradient-to-r from-[#1A2837] to-[#FF6B6B] text-white/90"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: 0.1 }}
+                  >
+                    Thoughts, stories and ideas about software development, design, and more.
+                  </motion.p>
+                </div>
+              </MotionItem>
+            </MotionSection>
             
-            <MotionItem delay={0.1}>
-              <p className="mb-8 max-w-3xl text-lg text-gray-700 dark:text-gray-300">
-                Thoughts, ideas, and tutorials about web development, design, and technology.
-              </p>
-            </MotionItem>
-          </MotionSection>
-          
-          <GradientSection className="mb-12">
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
               {posts.length === 0 ? (
                 <p className="text-center col-span-full py-12 text-gray-500 dark:text-gray-400">
                   No posts available yet. Check back soon!
@@ -81,88 +111,118 @@ export default function BlogPage() {
               ) : (
                 posts.map((post, index) => (
                   <MotionItem key={post.url} delay={index * 0.1}>
-                    <article
-                      className="flex flex-col h-full overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm transition-all hover:shadow-md dark:border-gray-700 dark:bg-gray-800"
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.3, delay: 0.1 * index }}
                     >
-                      <Link href={post.url} className="block h-full">
-                        <div className="relative aspect-video overflow-hidden bg-gray-200 dark:bg-gray-700">
+                      <motion.article
+                        className="group flex flex-col h-full overflow-hidden rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10 hover:border-[#4BF795]/30 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-[#4BF795]/10"
+                        whileHover={{ scale: 1.02 }}
+                      >
+                      <Link href={post.url} className="flex flex-col h-full">
+                        <div className="relative aspect-video overflow-hidden">
                           {post.image ? (
                             <Image
                               src={post.image}
                               alt={`${post.title} cover image`}
                               fill
                               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                              className="object-cover transition-transform duration-300 hover:scale-105"
+                              className="object-cover transition-transform duration-500 group-hover:scale-110"
                             />
                           ) : (
-                            <div className="flex h-full w-full items-center justify-center">
+                            <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-[#0E1824] to-[#1A2837]">
                               <span className="text-gray-400">No image</span>
                             </div>
                           )}
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end">
+                            <span className="inline-block px-4 py-2 text-sm font-medium text-white mb-4 ml-4 bg-[#FF6B6B] text-white rounded-full">
+                              Read Article <ArrowRightIcon />
+                            </span>
+                          </div>
                         </div>
                         <div className="p-6 flex flex-col h-full">
-                          <div className="mb-2 flex items-center text-sm text-gray-500 dark:text-gray-400">
+                          <div className="flex items-center text-sm text-[#FF6B6B] mb-3">
+                            <CalendarIcon />
                             <time dateTime={post.date.toISOString()}>
                               {formatDate(post.date)}
                             </time>
                           </div>
-                          <h2 className="mb-2 text-xl font-semibold leading-tight text-gray-900 dark:text-white">
+                          <h2 className="text-xl font-bold leading-tight text-white mb-3 line-clamp-2">
                             {post.title}
                           </h2>
-                          <p className="mb-4 text-gray-600 dark:text-gray-400">
+                          <p className="text-gray-300 mb-4 line-clamp-3">
                             {post.description}
                           </p>
                           {post.tags && post.tags.length > 0 && (
-                            <div className="flex flex-wrap gap-2 mt-auto">
-                              {post.tags.map((tag) => (
+                            <div className="flex flex-wrap gap-2 mt-auto pt-3 border-t border-white/10">
+                              <TagIcon />
+                              {post.tags.slice(0, 2).map((tag) => (
                                 <span
                                   key={tag}
-                                  className="rounded-full bg-gray-100 px-3 py-1 text-xs text-gray-700 dark:bg-gray-700 dark:text-gray-300"
+                                  className="rounded-full bg-white/10 px-3 py-1 text-xs text-white/80 hover:bg-white/20 transition-colors"
                                 >
                                   {tag}
                                 </span>
                               ))}
+                              {post.tags.length > 2 && (
+                                <span className="text-xs font-medium px-2.5 py-0.5 rounded-full bg-[#FF6B6B]/10 text-[#FF6B6B] border border-[#FF6B6B]/20">
+                                  +{post.tags.length - 2}
+                                </span>
+                              )}
                             </div>
                           )}
                         </div>
                       </Link>
-                    </article>
+                      </motion.article>
+                    </motion.div>
                   </MotionItem>
                 ))
               )}
             </div>
-          </GradientSection>
-          
-          <MotionSection delay={0.3}>
-            <MotionItem>
-              <h2 className="mb-4 text-2xl font-bold">Newsletter</h2>
-            </MotionItem>
             
-            <MotionItem delay={0.1}>
-              <p className="mb-6 text-lg text-gray-700 dark:text-gray-300">
-                Subscribe to my newsletter to receive updates on new blog posts and projects.
-              </p>
-            </MotionItem>
-            
-            <MotionItem delay={0.2}>
-              <form className="flex max-w-md flex-col gap-4 sm:flex-row">
-                <input
-                  type="email"
-                  placeholder="Your email address"
-                  className="flex-1 rounded-md border border-gray-300 bg-white px-4 py-2 text-gray-900 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/50 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
-                  required
-                />
-                <button
-                  type="submit"
-                  className="rounded-md bg-primary px-6 py-2 text-white hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:focus:ring-offset-gray-900"
-                >
-                  Subscribe
-                </button>
-              </form>
-            </MotionItem>
-          </MotionSection>
+            <MotionSection delay={0.3} className="mt-24">
+              <div className="relative bg-[#1A2837] p-8 rounded-2xl border border-white/10 overflow-hidden">
+                {/* Decorative elements */}
+                <div className="absolute -top-20 -right-20 w-40 h-40 bg-[#FF6B6B]/10 rounded-full filter blur-3xl"></div>
+                <div className="absolute -bottom-20 -left-20 w-40 h-40 bg-[#FF6B6B]/5 rounded-full filter blur-3xl"></div>
+                
+                <div className="relative max-w-3xl mx-auto text-center z-10">
+                  <MotionItem>
+                    <h2 className="text-2xl md:text-3xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-white to-[#FF6B6B]">
+                      Stay Updated
+                    </h2>
+                  </MotionItem>
+                  
+                  <MotionItem delay={0.1}>
+                    <p className="mb-8 text-lg text-gray-300">
+                      Subscribe to my newsletter to receive updates on new blog posts, projects, and insights.
+                    </p>
+                  </MotionItem>
+                  
+                  <MotionItem delay={0.2}>
+                    <form className="flex flex-col sm:flex-row gap-4 max-w-lg mx-auto">
+                      <input
+                        type="email"
+                        placeholder="Your email address"
+                        className="flex-1 rounded-lg bg-white/5 border border-white/10 px-5 py-3 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#FF6B6B] focus:border-transparent transition-all duration-200"
+                        required
+                      />
+                      <button
+                        type="submit"
+                        className="px-6 py-3 bg-gradient-to-r from-[#FF6B6B] to-[#FF6B6B]/90 text-white font-medium rounded-lg hover:shadow-lg hover:shadow-[#FF6B6B]/20 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#FF6B6B] focus:ring-offset-2 focus:ring-offset-[#1A2837]"
+                      >
+                        Subscribe
+                      </button>
+                    </form>
+                  </MotionItem>
+                </div>
+              </div>
+              </MotionSection>
+            </div>
+          </Container>
         </div>
-      </Container>
-    </MotionPage>
+      </MotionPage>
+    </div>
   );
-} 
+}

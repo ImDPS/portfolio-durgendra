@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useEffect, useState, Suspense } from 'react';
+import { useRef, useEffect, useState, Suspense, useMemo } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { useThemeStore } from '@/store/theme-store';
@@ -94,22 +94,28 @@ function generateGlobePoints() {
 function SkillsPoints({ prefersReducedMotion }: { prefersReducedMotion: boolean }) {
   const pointsRef = useRef<THREE.Points>(null!);
   const [hovered, setHovered] = useState<number | null>(null);
-  const [hoveredSkill, setHoveredSkill] = useState<string | null>(null);
+  const [hoveredSkill, setHoveredSkill] = useState<Skill | null>(null);
   const [hoveredPosition, setHoveredPosition] = useState<[number, number, number] | null>(null);
+  const [showTooltip, setShowTooltip] = useState(false);
+  const tooltipTimeoutRef = useRef<NodeJS.Timeout>();
+  const lastHoverPosition = useRef<[number, number, number] | null>(null);
+  const tooltipRef = useRef<HTMLDivElement>(null);
   
   const { positions, colors, sizes } = generateGlobePoints();
   
   // Set up points geometry and material
   useEffect(() => {
     if (pointsRef.current) {
-      // Create geometry with positions and colors
       const geometry = new THREE.BufferGeometry();
       geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
       geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
-      
-      // Apply to the mesh
       pointsRef.current.geometry = geometry;
     }
+    return () => {
+      if (tooltipTimeoutRef.current) {
+        clearTimeout(tooltipTimeoutRef.current);
+      }
+    };
   }, [positions, colors]);
   
   useFrame(({ clock }) => {
@@ -122,42 +128,99 @@ function SkillsPoints({ prefersReducedMotion }: { prefersReducedMotion: boolean 
     }
   });
 
-  // Custom ray casting for hover effects
+  // Handle pointer move with debouncing
   const handlePointerMove = (event: any) => {
-    if (pointsRef.current && event.intersections && event.intersections.length > 0) {
-      const intersection = event.intersections[0];
-      if (intersection.index !== undefined) {
-        setHovered(intersection.index);
-        setHoveredSkill(skillsData[intersection.index]?.name || null);
-        setHoveredPosition([
-          positions[intersection.index * 3],
-          positions[intersection.index * 3 + 1],
-          positions[intersection.index * 3 + 2],
-        ]);
+    if (!pointsRef.current) return;
+    
+    // Get all intersections
+    const intersections = event.intersections || [];
+    
+    if (intersections.length === 0) {
+      if (showTooltip) {
+        setShowTooltip(false);
+        setHovered(null);
+        setHoveredSkill(null);
+        setHoveredPosition(null);
       }
-    } else {
-      setHovered(null);
-      setHoveredSkill(null);
-      setHoveredPosition(null);
+      return;
+    }
+
+    const intersection = intersections[0];
+    if (intersection.index === undefined) return;
+    
+    const skill = skillsData[intersection.index];
+    if (!skill) return;
+    
+    const newPosition: [number, number, number] = [
+      positions[intersection.index * 3],
+      positions[intersection.index * 3 + 1] + 0.3, // Slightly above the point
+      positions[intersection.index * 3 + 2],
+    ];
+    
+    // Update position immediately for smooth movement
+    lastHoverPosition.current = newPosition;
+    
+    // Only update state if we don't have a current hover or if the skill changed
+    if (hovered !== intersection.index || hoveredSkill?.name !== skill.name) {
+      setHovered(intersection.index);
+      setHoveredSkill(skill);
+      setHoveredPosition(newPosition);
+      
+      // Small delay before showing tooltip to reduce flicker
+      if (tooltipTimeoutRef.current) {
+        clearTimeout(tooltipTimeoutRef.current);
+      }
+      
+      tooltipTimeoutRef.current = setTimeout(() => {
+        setShowTooltip(true);
+      }, 100);
     }
   };
+  
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      if (tooltipTimeoutRef.current) {
+        clearTimeout(tooltipTimeoutRef.current);
+      }
+    };
+  }, []);
 
   return (
     <group>
       <points 
         ref={pointsRef}
+        onPointerOver={handlePointerMove}
         onPointerMove={handlePointerMove}
         onPointerOut={() => {
+          setShowTooltip(false);
           setHovered(null);
           setHoveredSkill(null);
           setHoveredPosition(null);
+          lastHoverPosition.current = null;
+          if (tooltipTimeoutRef.current) {
+            clearTimeout(tooltipTimeoutRef.current);
+          }
         }}
       >
-        <bufferGeometry />
+        <bufferGeometry>
+          <bufferAttribute
+            attach="attributes-position"
+            count={positions.length / 3}
+            array={positions}
+            itemSize={3}
+          />
+          <bufferAttribute
+            attach="attributes-color"
+            count={colors.length / 3}
+            array={colors}
+            itemSize={3}
+          />
+        </bufferGeometry>
         <pointsMaterial
           transparent
           vertexColors
-          size={0.15}
+          size={0.2}
           sizeAttenuation={true}
           depthWrite={false}
         />
@@ -166,18 +229,61 @@ function SkillsPoints({ prefersReducedMotion }: { prefersReducedMotion: boolean 
       {/* Highlight hovered point */}
       {hovered !== null && hoveredPosition && (
         <mesh position={hoveredPosition}>
-          <sphereGeometry args={[0.18, 24, 24]} />
-          <meshBasicMaterial color="#f59e42" opacity={0.7} transparent />
+          <sphereGeometry args={[0.2, 32, 32]} />
+          <meshStandardMaterial 
+            color="#f59e42" 
+            emissive="#f59e42"
+            emissiveIntensity={0.5}
+            transparent 
+            opacity={0.8}
+            roughness={0.2}
+            metalness={0.7}
+          />
         </mesh>
       )}
       
       {/* Tooltip for hovered skill */}
-      {hoveredSkill && hoveredPosition && (
-        <Html position={hoveredPosition} center style={{ pointerEvents: 'none' }}>
-          <div className="px-3 py-2 rounded bg-gray-900 text-white text-xs shadow-lg border border-primary">
-            <strong>{hoveredSkill}</strong>
-            <br />
-            Level: {skillsData[hovered!].level}/10
+      {hoveredSkill && hoveredPosition && showTooltip && (
+        <Html
+          position={hoveredPosition}
+          center
+          style={{
+            pointerEvents: 'none',
+            transition: 'opacity 0.2s ease-out, transform 0.2s ease-out',
+            transform: 'translateY(10px)',
+            opacity: showTooltip ? 1 : 0,
+          }}
+          zIndexRange={[100, 0]}
+          className="transform -translate-x-1/2 -translate-y-full -mt-4"
+        >
+          <div 
+            ref={tooltipRef}
+            className="px-4 py-3 rounded-lg bg-gray-900/95 backdrop-blur-sm text-white text-sm shadow-xl border border-gray-700/50 transform transition-all duration-200 min-w-[140px]"
+            style={{
+              boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+            }}
+          >
+            <div className="font-semibold text-primary-300 mb-1">{hoveredSkill.name}</div>
+            <div className="flex items-center">
+              <div className="h-1.5 bg-gray-700 rounded-full flex-1 mr-2 overflow-hidden">
+                <div 
+                  className="h-full bg-gradient-to-r from-blue-400 to-purple-500 rounded-full"
+                  style={{ width: `${(hoveredSkill.level / 10) * 100}%` }}
+                />
+              </div>
+              <span className="text-xs font-mono text-gray-300">{hoveredSkill.level}/10</span>
+            </div>
+            <div className="text-xs mt-2 text-gray-400 capitalize">{hoveredSkill.category}</div>
+            
+            {/* Tooltip arrow */}
+            <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-4 h-4 bg-gray-900/95 rotate-45 -z-10" 
+                 style={{
+                   clipPath: 'polygon(0% 0%, 100% 100%, 0% 100%)',
+                   borderBottomRightRadius: '2px',
+                   borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
+                   borderRight: '1px solid rgba(255, 255, 255, 0.1)'
+                 }}
+            />
           </div>
         </Html>
       )}

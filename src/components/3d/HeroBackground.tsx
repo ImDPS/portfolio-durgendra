@@ -8,7 +8,7 @@ import { useThemeStore } from '@/store/theme-store';
 import { useReducedMotion } from '@/utils/use-reduced-motion';
 
 // Function to create initial particle data with more uniform distribution
-function createDynamicParticles(count = 50, theme = 'dark') { 
+function createDynamicParticles(count = 200, theme = 'dark') { // Increased particle count for better visibility
   const positions = new Float32Array(count * 3);
   const velocities = new Float32Array(count * 3);
   const baseColors = new Float32Array(count * 3);
@@ -16,9 +16,9 @@ function createDynamicParticles(count = 50, theme = 'dark') {
   const startupOffsets = new Float32Array(count * 2);
 
   // --- Grid-based distribution logic ---
-  const xRange = 28; // Total width for particle distribution
-  const yRange = 24; // Total height
-  const zRange = 18; // Total depth
+  const xRange = 35; // Increased range for more spread
+  const yRange = 30; // Increased range for more spread
+  const zRange = 25; // Increased range for more depth
 
   // Approximate grid dimensions to distribute 'count' particles
   // Aim for cells that are roughly cubic or match the aspect ratio of the space
@@ -70,7 +70,8 @@ function createDynamicParticles(count = 50, theme = 'dark') {
           baseColors[i3 + 1] = gFar + (gNear - gFar) * depth;     
           baseColors[i3 + 2] = bFar + (bNear - bFar) * depth;    
         }
-        sizes[i3 / 3] = (0.7 + Math.random() * 0.6) * (0.45 + depth * 0.45); 
+        // Increase base size and depth scaling for better visibility
+        sizes[i3 / 3] = (1.2 + Math.random() * 1.0) * (0.6 + depth * 0.6); 
 
         startupOffsets[i2] = (Math.random() - 0.5) * 8; 
         startupOffsets[i2 + 1] = (Math.random() - 0.5) * 4; 
@@ -323,32 +324,80 @@ function DynamicParticles({
 export default function HeroBackground() {
   const prefersReducedMotion = useReducedMotion();
   const { resolvedTheme } = useThemeStore(); 
-  const [mounted, setMounted] = useState(false);
   const [scrollY, setScrollY] = useState(0);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
-    setMounted(true);
     const handleScroll = () => setScrollY(window.scrollY);
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  if (!mounted) return null;
+  // Keep the component mounted at all times
+  const [isClient, setIsClient] = useState(false);
+  
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  if (!isClient) {
+    return (
+      <div className="absolute inset-0 -z-10" style={{ 
+        height: '100vh', 
+        width: '100%', 
+        backgroundColor: resolvedTheme === 'dark' ? '#0E1824' : '#f0f4f8' 
+      }} />
+    );
+  }
 
   return (
-    <div className="absolute inset-0 -z-10" style={{ height: '100vh', width: '100%', overflow: 'hidden' }}>
-      <Canvas camera={{ position: [0, 0, 8], fov: 50 }} style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%' }}> 
+    <div className="absolute inset-0 -z-10" style={{ 
+      height: '100vh', 
+      width: '100%', 
+      overflow: 'hidden',
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      pointerEvents: 'none'
+    }}>
+      <Canvas 
+        key={resolvedTheme} // Force re-render on theme change
+        camera={{ 
+          position: [0, 0, 15], 
+          fov: 60,
+          far: 1000 // Increased far plane for better depth
+        }}
+        dpr={typeof window !== 'undefined' ? Math.min(window.devicePixelRatio, 2) : 1}
+        style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          background: 'transparent',
+          pointerEvents: 'none',
+          zIndex: -1
+        }}
+        onCreated={({ gl }) => {
+          gl.setClearColor(0x0e1824, 0); // Transparent background
+          gl.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        }}
+      >
         <DynamicParticles 
-            prefersReducedMotion={prefersReducedMotion} 
-            scrollY={scrollY} 
-            resolvedTheme={resolvedTheme || 'dark'} 
+          prefersReducedMotion={prefersReducedMotion} 
+          scrollY={scrollY} 
+          resolvedTheme={resolvedTheme || 'dark'}
         />
         <fog
           attach="fog"
-          color={resolvedTheme === 'dark' ? '#05070f' : '#dde4ed'} 
-          near={4.5} 
-          far={17}   
+          color={resolvedTheme === 'dark' ? '#0E1824' : '#e6ecf2'}
+          near={5}
+          far={50}
         />
+        <ambientLight intensity={0.8} />
+        <pointLight position={[10, 10, 10]} intensity={1.5} />
       </Canvas>
     </div>
   );

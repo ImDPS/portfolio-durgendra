@@ -1,0 +1,47 @@
+@keyframes gradientBorder {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
+}
+
+.skillsContainer {
+  position: relative;
+  margin: 3rem 0;
+  border-radius: 0.75rem;
+  background: transparent;
+  padding: 1px;
+}
+
+.staticBorder {
+  position: absolute;
+  inset: 0;
+  border-radius: 0.75rem;
+  background: linear-gradient(to right, #3B82F6, #8B5CF6, #EC4899);
+  z-index: -1;
+}
+
+.animatedBorder {
+  position: absolute;
+  inset: 0;
+  border-radius: 0.75rem;
+  opacity: 0;
+  transition: opacity 0.5s;
+  background: linear-gradient(90deg, #3B82F6, #8B5CF6, #EC4899, #8B5CF6, #3B82F6);
+  background-size: 400% 100%;
+  animation: gradientBorder 3s linear infinite;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  z-index: -1;
+}
+
+.skillsContainer:hover .animatedBorder {
+  opacity: 1;
+}
+
+.skillsContent {
+  position: relative;
+  border-radius: 0.7rem;
+  background: transparent;
+  padding: 2rem;
+}
