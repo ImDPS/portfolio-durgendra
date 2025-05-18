@@ -187,7 +187,7 @@ export default function Home() {
 
               {/* Right Column - 3D Rocket */}
               <motion.div 
-                className="order-1 lg:order-2 flex justify-center lg:justify-end"
+                className="hidden md:flex order-1 lg:order-2 justify-center lg:justify-end"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ 
                   opacity: 1, 
