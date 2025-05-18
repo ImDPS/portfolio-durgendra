@@ -4,7 +4,7 @@
 import React, { useRef, useEffect, useState, useMemo, useCallback } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber'; // useThree is still needed by SceneSetup and RocketModel
 import * as THREE from 'three';
-import { OrbitControls } from '@react-three/drei';
+// OrbitControls removed to disable user interaction
 
 // Design System Colors (ensure these are defined or imported)
 const COLOR_ROCKET_BODY = new THREE.Color('#1A2837');
@@ -15,8 +15,9 @@ const COLOR_FLAME_PRIMARY = new THREE.Color('#FF6B6B');
 const COLOR_FLAME_SECONDARY = new THREE.Color('#FF8E53');
 const COLOR_TEXT_WHITE = new THREE.Color('#FFFFFF');
 
-const ROCKET_SCALE = 0.5;
-const PATH_ANIMATION_SPEED_FACTOR = 0.035;
+const ROCKET_SCALE = 1.2; // Increased from 0.5
+// Slower, more subtle floating animation
+const PATH_ANIMATION_SPEED_FACTOR = 0.04; // Increased from 0.02
 
 // --- Path Constants ---
 const INITIAL_POINT = new THREE.Vector3(0, 1.5, 0);
@@ -31,42 +32,38 @@ function SceneSetup() {
   return null;
 }
 
+// Path definitions covering the entire hero section
 const pathDefinitions: (() => THREE.Vector3[])[] = [
+  // Horizontal figure-8 pattern
   () => [
-    INITIAL_POINT.clone(),
-    new THREE.Vector3(-WORLD_X_EXTENT * 0.7, INITIAL_POINT.y + 1, INITIAL_POINT.z - 2),
-    new THREE.Vector3(-WORLD_X_EXTENT * OFFSCREEN_X_FACTOR, INITIAL_POINT.y + Math.random() * 2 - 1, INITIAL_POINT.z + Math.random() * 4 - 2),
-    new THREE.Vector3(-WORLD_X_EXTENT * 0.5, INITIAL_POINT.y - 1, INITIAL_POINT.z + 2),
-    INITIAL_POINT.clone(),
+    new THREE.Vector3(-WORLD_X_EXTENT * 0.8, 0, 0),
+    new THREE.Vector3(0, WORLD_X_EXTENT * 0.2, -2),
+    new THREE.Vector3(WORLD_X_EXTENT * 0.8, 0, 0),
+    new THREE.Vector3(0, -WORLD_X_EXTENT * 0.2, 2),
+    new THREE.Vector3(-WORLD_X_EXTENT * 0.8, 0, 0),
   ],
+  // Diagonal cross pattern
   () => [
-    INITIAL_POINT.clone(),
-    new THREE.Vector3(-WORLD_X_EXTENT * 0.4, INITIAL_POINT.y + 2, INITIAL_POINT.z + 1.5),
-    new THREE.Vector3(-WORLD_X_EXTENT * 0.85, INITIAL_POINT.y + Math.random() * 1, INITIAL_POINT.z - 1),
-    new THREE.Vector3(-WORLD_X_EXTENT * 0.3, INITIAL_POINT.y - 0.5, INITIAL_POINT.z - 2.5),
-    INITIAL_POINT.clone(),
+    new THREE.Vector3(-WORLD_X_EXTENT * 0.8, -WORLD_X_EXTENT * 0.2, 0),
+    new THREE.Vector3(WORLD_X_EXTENT * 0.8, WORLD_X_EXTENT * 0.2, -2),
+    new THREE.Vector3(-WORLD_X_EXTENT * 0.8, WORLD_X_EXTENT * 0.2, 2),
+    new THREE.Vector3(WORLD_X_EXTENT * 0.8, -WORLD_X_EXTENT * 0.2, 0),
   ],
-  () => [
-    INITIAL_POINT.clone(),
-    new THREE.Vector3(WORLD_X_EXTENT * 0.7, INITIAL_POINT.y - 1, INITIAL_POINT.z + 2),
-    new THREE.Vector3(WORLD_X_EXTENT * OFFSCREEN_X_FACTOR, INITIAL_POINT.y + Math.random() * 2 - 1, INITIAL_POINT.z + Math.random() * 4 - 2),
-    new THREE.Vector3(WORLD_X_EXTENT * 0.5, INITIAL_POINT.y + 1, INITIAL_POINT.z - 2),
-    INITIAL_POINT.clone(),
-  ],
-  () => [
-    INITIAL_POINT.clone(),
-    new THREE.Vector3(WORLD_X_EXTENT * 0.4, INITIAL_POINT.y - 1.5, INITIAL_POINT.z - 1),
-    new THREE.Vector3(WORLD_X_EXTENT * 0.85, INITIAL_POINT.y + Math.random() * 1, INITIAL_POINT.z + 1.5),
-    new THREE.Vector3(WORLD_X_EXTENT * 0.3, INITIAL_POINT.y + 0.5, INITIAL_POINT.z + 2.5),
-    INITIAL_POINT.clone(),
-  ],
-  () => [
-    INITIAL_POINT.clone(),
-    new THREE.Vector3(INITIAL_POINT.x + 1, INITIAL_POINT.y + 3, INITIAL_POINT.z - 2.5),
-    new THREE.Vector3(INITIAL_POINT.x, INITIAL_POINT.y + 1.5, INITIAL_POINT.z - 4),
-    new THREE.Vector3(INITIAL_POINT.x - 1, INITIAL_POINT.y - 1, INITIAL_POINT.z - 2.5),
-    INITIAL_POINT.clone(),
-  ],
+  // Large circular pattern
+  () => {
+    const points = [];
+    const radius = WORLD_X_EXTENT * 0.6;
+    const segments = 12;
+    for (let i = 0; i <= segments; i++) {
+      const angle = (i / segments) * Math.PI * 2;
+      points.push(new THREE.Vector3(
+        Math.cos(angle) * radius,
+        Math.sin(angle) * radius * 0.5,
+        Math.sin(angle) * 0.5
+      ));
+    }
+    return points;
+  }
 ];
 
 function getRandomPathPoints(): THREE.Vector3[] {
@@ -108,34 +105,47 @@ function RocketModel() {
   }, [selectNextPath]);
 
   useFrame((state, delta) => {
-    const { clock } = state;
-    const time = clock.getElapsedTime();
+    if (!currentCurve) return;
 
-    if (currentCurve && pathFollowingGroupRef.current) {
-      const newProgress = pathProgress + delta * PATH_ANIMATION_SPEED_FACTOR;
-      if (newProgress < 1) {
-        setPathProgress(newProgress);
-        const point = currentCurve.getPointAt(newProgress);
-        pathFollowingGroupRef.current.position.copy(point);
-        const tangent = currentCurve.getTangentAt(newProgress).normalize();
-        const worldUpForOrientation = new THREE.Vector3(0, 1, 0);
-        alignmentMatrix.lookAt(point, point.clone().add(tangent), worldUpForOrientation);
-        targetQuaternion.setFromRotationMatrix(alignmentMatrix);
-        targetQuaternion.multiply(yToZRotation);
-        pathFollowingGroupRef.current.quaternion.slerp(targetQuaternion, 0.1);
-      } else {
-        pathFollowingGroupRef.current.position.copy(INITIAL_POINT);
-        selectNextPath();
-      }
+    const newProgress = (pathProgress + delta * PATH_ANIMATION_SPEED_FACTOR) % 1;
+    setPathProgress(newProgress);
+
+    // Get position and tangent for orientation
+    const point = currentCurve.getPoint(newProgress);
+    const tangent = currentCurve.getTangent(newProgress).normalize();
+
+    // Smoothly move to the target position (faster follow)
+    pathFollowingGroupRef.current.position.lerp(point, 0.08);
+
+    // Update rotation to face direction of movement
+    if (tangent.length() > 0) {
+      alignmentMatrix.lookAt(
+        pathFollowingGroupRef.current.position,
+        new THREE.Vector3().addVectors(pathFollowingGroupRef.current.position, tangent),
+        new THREE.Vector3(0, 1, 0)
+      );
+      targetQuaternion.setFromRotationMatrix(alignmentMatrix);
+      targetQuaternion.multiply(yToZRotation);
+      modelGroupRef.current.quaternion.slerp(targetQuaternion, 0.15); // Faster rotation
     }
 
+    // Add subtle floating effect
+    modelGroupRef.current.position.y = Math.sin(state.clock.elapsedTime * 2) * 0.05;
+
+    // Flame animation
     if (flameRef.current) {
-      const flameScaleBase = 0.9;
-      const flameScaleFluctuation = 0.15;
-      const flameScale = flameScaleBase + Math.sin(time * 30) * flameScaleFluctuation;
-      flameRef.current.scale.set(flameScale, flameScale * 1.3, flameScale);
-      (flameRef.current.material as THREE.MeshStandardMaterial).emissiveIntensity = Math.random() * 0.8 + 2.8;
-      (flameRef.current.material as THREE.MeshStandardMaterial).opacity = Math.random() * 0.25 + 0.7;
+      const flameScale = 0.8 + Math.sin(state.clock.elapsedTime * 5) * 0.1;
+      flameRef.current.scale.set(flameScale, flameScale, flameScale);
+      
+      // Make flame more intense when moving faster
+      const speed = tangent.length();
+      const intensity = 0.8 + speed * 0.5;
+      (flameRef.current.material as THREE.MeshStandardMaterial).emissiveIntensity = intensity;
+    }
+
+    // Select new path when current one is complete
+    if (newProgress < pathProgress) {
+      selectNextPath();
     }
   });
 
@@ -188,38 +198,38 @@ function RocketModel() {
 }
 
 export default function InteractiveRocket() {
-  // const { viewport } = useThree(); // <<-- THIS LINE WAS REMOVED/COMMENTED
-  // It was causing the error because useThree() must be inside a Canvas descendant.
-
   return (
-    <div className="w-full h-full relative">
-      <div className="w-full h-full cursor-grab active:cursor-grabbing">
-        <Canvas
-          shadows
-          camera={{ position: [INITIAL_POINT.x, INITIAL_POINT.y + 2, 12], fov: 55, near: 0.1, far: 1000 }}
-          gl={{ antialias: true, alpha: true }}
-        >
-          <SceneSetup /> {/* useThree() is correctly used here */}
-          <ambientLight intensity={0.6} color={COLOR_TEXT_WHITE} />
-          <directionalLight
-            position={[INITIAL_POINT.x + 5, INITIAL_POINT.y + 8, 10]} intensity={1.8} color={COLOR_TEXT_WHITE} castShadow
-            shadow-mapSize-width={1024} shadow-mapSize-height={1024} shadow-bias={-0.0001}
-          />
-          <pointLight position={[INITIAL_POINT.x, INITIAL_POINT.y + 5, INITIAL_POINT.z + 5]} intensity={0.7} color={COLOR_ROCKET_WINDOW_EMISSIVE} distance={30} />
-          <pointLight position={[INITIAL_POINT.x, INITIAL_POINT.y - 5, INITIAL_POINT.z]} intensity={0.5} color={COLOR_FLAME_PRIMARY} distance={20} />
-
-          <React.Suspense fallback={null}>
-            <RocketModel /> {/* useThree() could be used inside RocketModel if needed */}
-          </React.Suspense>
-
-          <OrbitControls
-            enableZoom={true} enablePan={true}
-            minDistance={3} maxDistance={50}
-            autoRotate={false}
-            target={INITIAL_POINT}
-          />
-        </Canvas>
-      </div>
+    <div className="w-full h-full">
+      <Canvas 
+        camera={{ 
+          position: [0, 0, 12], // Moved camera closer
+          fov: 65, // Slightly increased FOV
+          near: 0.1,
+          far: 1000
+        }}
+        gl={{ antialias: true }}
+      >
+        <SceneSetup />
+        <ambientLight intensity={0.6} color={COLOR_TEXT_WHITE} />
+        <directionalLight
+          position={[5, 8, 10]} 
+          intensity={1.8} 
+          color={COLOR_TEXT_WHITE} 
+          castShadow
+          shadow-mapSize-width={1024} 
+          shadow-mapSize-height={1024} 
+          shadow-bias={-0.0001}
+        />
+        <pointLight 
+          position={[0, 5, 5]} 
+          intensity={0.7} 
+          color={COLOR_ROCKET_WINDOW_EMISSIVE} 
+          distance={30} 
+        />
+        <React.Suspense fallback={null}>
+          <RocketModel />
+        </React.Suspense>
+      </Canvas>
     </div>
   );
 }
