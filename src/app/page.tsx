@@ -102,9 +102,9 @@ export default function Home() {
   return (
     <motion.div className="min-h-screen">
       {/* Hero Section */}
-      <div className="relative z-10 pt-24 pb-16 md:pt-32">
-        <Container>
-          <MotionSection className="min-h-screen flex flex-col justify-center pt-24 pb-16 md:pt-32">
+      <div className="relative z-10 h-screen flex items-center">
+        <Container className="w-full">
+          <MotionSection className="w-full">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
               {/* Left Column - Content */}
               <div className="order-2 lg:order-1">
@@ -187,7 +187,7 @@ export default function Home() {
 
               {/* Right Column - 3D Rocket */}
               <motion.div 
-                className="hidden md:flex order-1 lg:order-2 justify-center lg:justify-end"
+                className="hidden md:flex order-1 lg:order-2 justify-center lg:justify-end h-full"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ 
                   opacity: 1, 
@@ -198,7 +198,7 @@ export default function Home() {
                   delay: 0.4,
                 }}
               >
-                <div className="w-full h-96 lg:h-[32rem] relative">
+                <div className="w-full h-[32rem] lg:h-[40rem] relative">
                   <InteractiveRocket />
                 </div>
               </motion.div>
