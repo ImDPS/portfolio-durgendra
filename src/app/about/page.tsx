@@ -112,16 +112,19 @@ export default function AboutPage() {
             <MotionSection>
               <MotionItem>
                 <div className="text-center mb-16">
-                  <motion.h1 
-                    className="text-4xl md:text-6xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-[#1A2837] to-[#FF6B6B]"
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5 }}
-                  >
-                    About Me
-                  </motion.h1>
+                  <div className="relative inline-block">
+                    <motion.h1 
+                      className="text-4xl md:text-6xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-[#FF6B6B] to-[#FF8E53]"
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.5 }}
+                    >
+                      About Me
+                    </motion.h1>
+                    <div className="absolute -inset-4 -z-10 rounded-full bg-gradient-to-r from-[#FF6B6B]/20 to-[#FF8E53]/20 blur-xl"></div>
+                  </div>
                   <motion.p 
-                    className="text-lg max-w-2xl mx-auto text-gray-300"
+                    className="text-lg max-w-2xl mx-auto text-gray-300 mt-6"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5, delay: 0.1 }}

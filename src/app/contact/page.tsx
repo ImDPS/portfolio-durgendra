@@ -84,16 +84,19 @@ const ContactPage = () => {
           <MotionSection className="mb-16">
             <MotionItem>
               <div className="mb-12 text-center">
-                <motion.h1 
-                  className="mb-6 text-4xl font-bold md:text-5xl lg:text-6xl bg-clip-text text-transparent bg-gradient-to-r from-[#1A2837] to-[#FF6B6B]"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5 }}
-                >
-                  Get in Touch
-                </motion.h1>
+                <div className="relative inline-block">
+                  <motion.h1 
+                    className="mb-6 text-4xl font-bold md:text-5xl lg:text-6xl text-transparent bg-clip-text bg-gradient-to-r from-[#FF6B6B] to-[#FF8E53]"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5 }}
+                  >
+                    Get in Touch
+                  </motion.h1>
+                  <div className="absolute -inset-4 -z-10 rounded-full bg-gradient-to-r from-[#FF6B6B]/20 to-[#FF8E53]/20 blur-xl"></div>
+                </div>
                 <motion.p 
-                  className="mx-auto max-w-3xl text-lg text-gray-300 md:text-xl"
+                  className="mx-auto max-w-3xl text-lg text-gray-300 md:text-xl mt-6"
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: 0.1 }}
